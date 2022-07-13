@@ -138,7 +138,7 @@ def train_skin_data(images, labels, aug):
         img = img[0].decode('utf-8')
         img = cv2.imread(img, cv2.COLOR_BGR2RGB)
         img = cv2.resize(img, (N_BEF_RES, N_BEF_RES))
-        img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
+        # img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
 
         # print(f'=================>{f}')
         # idx = f.split('\\')[2]
@@ -195,7 +195,7 @@ def test_skin_data(files):
         
         img = cv2.imread(f, cv2.COLOR_BGR2RGB)
         img = cv2.resize(img, (N_BEF_RES, N_BEF_RES))
-        img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
+        # img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
         
         idx = f.split('/')[-2]
         
