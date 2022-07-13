@@ -472,7 +472,7 @@ train_images = np.reshape(train_images, [-1, 1])
 train_labels = np.reshape(train_labels, [-1, 1])
 
 
-for skf_num in range(5, 11):
+for skf_num in range(3, 11):
     skf = StratifiedKFold(n_splits=skf_num)
     kfold = 0 
     for train_idx, valid_idx in skf.split(train_images, train_labels):
