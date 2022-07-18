@@ -235,7 +235,7 @@ def create_model(model_name, optimizer='adam', trainable=False, mc=False):
     # with strategy.scope():
     
     if model_name == 'efficient':
-        base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(N_RES, N_RES, 3),  weights = 'imagenet')
+        base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(N_RES, N_RES, 1),  weights = 'imagenet')
         base_model.trainable = trainable
         
         inputs = keras.Input(shape=(N_RES, N_RES, 1))
@@ -251,7 +251,7 @@ def create_model(model_name, optimizer='adam', trainable=False, mc=False):
         base_model = keras.applications.VGG16(include_top=False, input_shape=(N_RES, N_RES, 3),  weights = 'imagenet')
         base_model.trainable = True
         
-        inputs = keras.Input(shape=(N_RES, N_RES, 3))
+        inputs = keras.Input(shape=(N_RES, N_RES, 1))
         x = base_model(inputs)
         x = keras.layers.Flatten(name = "avg_pool")(x) 
         x = keras.layers.Dense(512, activation='relu')(x)
@@ -295,10 +295,10 @@ def run_expriment(model_name, train_dataset, val_dataset, class_weights=None, op
     with strategy.scope():
     
         if model_name == 'efficient':
-            base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(N_RES, N_RES, 3),  weights = 'imagenet')
+            base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(N_RES, N_RES, 1),  weights = 'imagenet')
             base_model.trainable = trainable
             
-            inputs = keras.Input(shape=(N_RES, N_RES, 3))
+            inputs = keras.Input(shape=(N_RES, N_RES, 1))
             x = base_model(inputs)
             x = keras.layers.GlobalAveragePooling2D()(x) 
             x = get_dropout(x, mc)
@@ -308,10 +308,10 @@ def run_expriment(model_name, train_dataset, val_dataset, class_weights=None, op
             
         # VGG16 
         else:
-            base_model = keras.applications.VGG16(include_top=False, input_shape=(N_RES, N_RES, 3),  weights = 'imagenet')
+            base_model = keras.applications.VGG16(include_top=False, input_shape=(N_RES, N_RES, 1),  weights = 'imagenet')
             base_model.trainable = True
             
-            inputs = keras.Input(shape=(N_RES, N_RES, 3))
+            inputs = keras.Input(shape=(N_RES, N_RES, 1))
             x = base_model(inputs)
             x = keras.layers.Flatten(name = "avg_pool")(x) 
             x = keras.layers.Dense(512, activation='relu')(x)
