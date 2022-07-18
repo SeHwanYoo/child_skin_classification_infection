@@ -238,7 +238,7 @@ def create_model(model_name, optimizer='adam', trainable=False, mc=False):
         base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(N_RES, N_RES, 3),  weights = 'imagenet')
         base_model.trainable = trainable
         
-        inputs = keras.Input(shape=(N_RES, N_RES, 3))
+        inputs = keras.Input(shape=(N_RES, N_RES, 1))
         x = base_model(inputs)
         x = keras.layers.GlobalAveragePooling2D()(x) 
         x = get_dropout(x, mc)
@@ -371,13 +371,13 @@ def create_dataset(images, labels, d_type='train', aug=False):
     if d_type == 'test':
         return tf.data.Dataset.from_generator(test_skin_data, 
                                               output_types=(tf.float64, tf.float32), 
-                                              output_shapes=(tf.TensorShape([N_RES, N_RES, 3]), tf.TensorShape([1])),
+                                              output_shapes=(tf.TensorShape([N_RES, N_RES, 1]), tf.TensorShape([1])),
                                               args=[images, labels])
         
     else:
         return tf.data.Dataset.from_generator(train_skin_data, 
                                               output_types=(tf.float64, tf.float32), 
-                                              output_shapes=(tf.TensorShape([N_RES, N_RES, 3]), tf.TensorShape([1])),
+                                              output_shapes=(tf.TensorShape([N_RES, N_RES, 1]), tf.TensorShape([1])),
                                               args=[images, labels, aug])
         
         
@@ -440,6 +440,7 @@ test_images = []
 
 for i in range(6):
     # for key in train_dict.keys():
+    
     img = glob(dataset + f'/H{str(i)}/*/*.jpg')
     train_images.extend(img) 
 
