@@ -228,17 +228,23 @@ def create_class_weight(train_dict):
 
     return class_weight
 
-def create_model(model_name, optimizer='adam', trainable=False, mc=False): 
+def create_model(model_name, optimizer='adam', trainable=False, num_trainable=100, mc=False): 
 
     # strategy = tf.distribute.MirroredStrategy()
 
     # with strategy.scope():
     
     if model_name == 'efficient':
-        base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(N_RES, N_RES, 1),  weights = 'imagenet')
+        base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(N_RES, N_RES, 3),  weights = 'imagenet')
+        # base_model.trainable = trainable
+        
         base_model.trainable = trainable
         
-        inputs = keras.Input(shape=(N_RES, N_RES, 1))
+        if trainable:
+            for layer in base_model.layers[:num_trainable]:
+                layer.trainable = False
+        
+        inputs = keras.Input(shape=(N_RES, N_RES, 3))
         x = base_model(inputs)
         x = keras.layers.GlobalAveragePooling2D()(x) 
         x = get_dropout(x, mc)
@@ -251,7 +257,7 @@ def create_model(model_name, optimizer='adam', trainable=False, mc=False):
         base_model = keras.applications.VGG16(include_top=False, input_shape=(N_RES, N_RES, 3),  weights = 'imagenet')
         base_model.trainable = True
         
-        inputs = keras.Input(shape=(N_RES, N_RES, 1))
+        inputs = keras.Input(shape=(N_RES, N_RES, 3))
         x = base_model(inputs)
         x = keras.layers.Flatten(name = "avg_pool")(x) 
         x = keras.layers.Dense(512, activation='relu')(x)
@@ -295,10 +301,10 @@ def run_expriment(model_name, train_dataset, val_dataset, class_weights=None, op
     with strategy.scope():
     
         if model_name == 'efficient':
-            base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(N_RES, N_RES, 1),  weights = 'imagenet')
+            base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(N_RES, N_RES, 3),  weights = 'imagenet')
             base_model.trainable = trainable
             
-            inputs = keras.Input(shape=(N_RES, N_RES, 1))
+            inputs = keras.Input(shape=(N_RES, N_RES, 3))
             x = base_model(inputs)
             x = keras.layers.GlobalAveragePooling2D()(x) 
             x = get_dropout(x, mc)
@@ -308,10 +314,10 @@ def run_expriment(model_name, train_dataset, val_dataset, class_weights=None, op
             
         # VGG16 
         else:
-            base_model = keras.applications.VGG16(include_top=False, input_shape=(N_RES, N_RES, 1),  weights = 'imagenet')
+            base_model = keras.applications.VGG16(include_top=False, input_shape=(N_RES, N_RES, 3),  weights = 'imagenet')
             base_model.trainable = True
             
-            inputs = keras.Input(shape=(N_RES, N_RES, 1))
+            inputs = keras.Input(shape=(N_RES, N_RES, 3))
             x = base_model(inputs)
             x = keras.layers.Flatten(name = "avg_pool")(x) 
             x = keras.layers.Dense(512, activation='relu')(x)
@@ -331,8 +337,7 @@ def run_expriment(model_name, train_dataset, val_dataset, class_weights=None, op
             tf.keras.callbacks.EarlyStopping(monitor = 'val_accuracy', 
                                             patience = 4, 
                                             mode='auto',
-                                            min_delta = 0.01)
-            ]
+                                            min_delta = 0.01)]
 
         
         LR = 0.001
@@ -371,13 +376,13 @@ def create_dataset(images, labels, d_type='train', aug=False):
     if d_type == 'test':
         return tf.data.Dataset.from_generator(test_skin_data, 
                                               output_types=(tf.float64, tf.float32), 
-                                              output_shapes=(tf.TensorShape([N_RES, N_RES, 1]), tf.TensorShape([1])),
+                                              output_shapes=(tf.TensorShape([N_RES, N_RES, 3]), tf.TensorShape([1])),
                                               args=[images, labels])
         
     else:
         return tf.data.Dataset.from_generator(train_skin_data, 
                                               output_types=(tf.float64, tf.float32), 
-                                              output_shapes=(tf.TensorShape([N_RES, N_RES, 1]), tf.TensorShape([1])),
+                                              output_shapes=(tf.TensorShape([N_RES, N_RES, 3]), tf.TensorShape([1])),
                                               args=[images, labels, aug])
         
         
@@ -486,7 +491,10 @@ for skf_num in range(3, 11):
         # Open a strategy scope.
         # def create_model(model_name, optimizer='adam', trainable=False, mc=False
         with strategy.scope():
-            model = create_model('efficient', optimizer='sgd')
+            model = create_model('efficient', 
+                                 optimizer='sgd', 
+                                 trainable=True, 
+                                 num_trainable=-2)
 
         train_dataset = create_dataset(train_images[train_idx], train_labels[train_idx], aug=False) 
         valid_dataset = create_dataset(train_images[valid_idx], train_labels[valid_idx]) 
@@ -496,32 +504,33 @@ for skf_num in range(3, 11):
 
         # model, hist = run_expriment('efficient', train_dataset, valid_dataset, class_weights=None, optimizer='sgd', trainable=False, batch_size=N_BATCH, mc=False, epochs=50)
 
-        sv = [tf.keras.callbacks.ModelCheckpoint(os.path.join(f'{PATH}/models/check_point_efficient_{time.strftime("%Y%m%d-%H%M%S")}.h5'), 
+        sv = [tf.keras.callbacks.ModelCheckpoint(os.path.join(f'../../models/child_classification_infection/check_point_efficient_{time.strftime("%Y%m%d-%H%M%S")}.h5'), 
                                             monitor='val_accuracy', 
                                             verbose=0, 
                                             save_best_only=True,
                                             save_weights_only=False, 
                                             mode='max', 
                                             save_freq='epoch'), 
-        tf.keras.callbacks.EarlyStopping(monitor = 'val_accuracy', 
-                                        patience = 4, 
-                                        mode='auto',
-                                        min_delta = 0.01)
+        # tf.keras.callbacks.EarlyStopping(monitor = 'val_accuracy', 
+        #                                 patience = 4, 
+        #                                 mode='auto',
+        #                                 min_delta = 0.01)
+        # 
         ]
 
         hist = model.fit(train_dataset, 
                         validation_data=valid_dataset,
-                        epochs = 50,
+                        epochs = 100,
                         verbose = 1,
                         callbacks=[sv])  
 
 
         # evaluation
-        model.save(f'/models/child_classification_infection/{time.strftime("%Y%m%d-%H%M%S")}_efficientb4_infection_kfold_{skf_num}_{kfold}.h5')
+        model.save(f'../../models/child_classification_infection/{time.strftime("%Y%m%d-%H%M%S")}_efficientb4_infection_kfold_{skf_num}_{kfold}.h5')
 
         # import pandas as pd
         hist_df = pd.DataFrame(hist.history)
-        with open(f'/models/child_classification_infection/{time.strftime("%Y%m%d-%H%M%S")}_efficientb4_infection_kfold_{skf_num}_{kfold}.csv', mode='w') as f:
+        with open(f'../../models/child_classification_infection/{time.strftime("%Y%m%d-%H%M%S")}_efficientb4_infection_kfold_{skf_num}_{kfold}.csv', mode='w') as f:
             hist_df.to_csv(f)
 
         kfold += 1
