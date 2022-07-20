@@ -487,6 +487,7 @@ for skf_num in [5, 10]:
     for train_idx, valid_idx in skf.split(train_images, train_labels):
 
         strategy = tf.distribute.MirroredStrategy()
+        options = tf.data.Options()
         # print("Number of devices: {}".format(strategy.num_replicas_in_sync))
 
         # Open a strategy scope.
@@ -499,6 +500,9 @@ for skf_num in [5, 10]:
 
         train_dataset = create_dataset(train_images[train_idx], train_labels[train_idx], aug=False) 
         valid_dataset = create_dataset(train_images[valid_idx], train_labels[valid_idx]) 
+        
+        train_dataset = train_dataset.with_options(options)
+        valid_dataset = valid_dataset.with_options(options)
 
         train_dataset = train_dataset.batch(N_BATCH, drop_remainder=True).prefetch(AUTOTUNE)
         valid_dataset = valid_dataset.batch(N_BATCH, drop_remainder=True).prefetch(AUTOTUNE)
