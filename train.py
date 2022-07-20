@@ -137,7 +137,7 @@ def train_skin_data(images, labels, aug):
     
         img = img[0].decode('utf-8')
         img = cv2.imread(img, cv2.COLOR_BGR2RGB)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = cv2.resize(img, (N_BEF_RES, N_BEF_RES))
         # img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
 
@@ -195,7 +195,7 @@ def test_skin_data(files):
         f = file.decode('utf-8')
         
         img = cv2.imread(f, cv2.COLOR_BGR2RGB)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = cv2.resize(img, (N_BEF_RES, N_BEF_RES))
         # img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
         
@@ -480,7 +480,8 @@ train_images = np.reshape(train_images, [-1, 1])
 train_labels = np.reshape(train_labels, [-1, 1])
 
 
-for skf_num in range(3, 11):
+# for skf_num in range(3, 11):
+for skf_num in [5, 10]:
     skf = StratifiedKFold(n_splits=skf_num)
     kfold = 0 
     for train_idx, valid_idx in skf.split(train_images, train_labels):
@@ -505,12 +506,9 @@ for skf_num in range(3, 11):
         # model, hist = run_expriment('efficient', train_dataset, valid_dataset, class_weights=None, optimizer='sgd', trainable=False, batch_size=N_BATCH, mc=False, epochs=50)
 
         sv = [tf.keras.callbacks.ModelCheckpoint(os.path.join(f'../../models/child_classification_infection/check_point_efficient_{time.strftime("%Y%m%d-%H%M%S")}.h5'), 
-                                            monitor='val_accuracy', 
-                                            verbose=0, 
-                                            save_best_only=True,
-                                            save_weights_only=False, 
-                                            mode='max', 
-                                            save_freq='epoch'), 
+                                                 monitor='val_accuracy', verbose=0, 
+                                                 save_best_only=True,save_weights_only=False, mode='max', 
+                                                 freq='epoch'), 
         # tf.keras.callbacks.EarlyStopping(monitor = 'val_accuracy', 
         #                                 patience = 4, 
         #                                 mode='auto',
