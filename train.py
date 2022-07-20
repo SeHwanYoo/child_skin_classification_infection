@@ -32,8 +32,8 @@ silence_tensorflow()
 
 AUTOTUNE = tf.data.AUTOTUNE
 
-N_BEF_RES = 256
-N_RES = 256 
+N_BEF_RES = 32
+N_RES = 32
 N_BATCH = 32 
 
 N_CLASSES = 2
