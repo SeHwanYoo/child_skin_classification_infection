@@ -225,33 +225,33 @@ if __name__ == '__main__':
                                             trainable=True, 
                                             num_trainable=-2)
 
-            train_dataset = dataset_generator.create_dataset(train_images[train_idx], train_labels[train_idx], aug=False) 
-            valid_dataset = dataset_generator.create_dataset(train_images[valid_idx], train_labels[valid_idx]) 
-            
-            train_dataset = train_dataset.with_options(options)
-            valid_dataset = valid_dataset.with_options(options)
+                train_dataset = dataset_generator.create_dataset(train_images[train_idx], train_labels[train_idx], aug=False) 
+                valid_dataset = dataset_generator.create_dataset(train_images[valid_idx], train_labels[valid_idx]) 
+                
+                train_dataset = train_dataset.with_options(options)
+                valid_dataset = valid_dataset.with_options(options)
 
-            train_dataset = train_dataset.batch(num_batch, drop_remainder=True).prefetch(AUTOTUNE)
-            valid_dataset = valid_dataset.batch(num_batch, drop_remainder=True).prefetch(AUTOTUNE)
+                train_dataset = train_dataset.batch(num_batch, drop_remainder=True).prefetch(AUTOTUNE)
+                valid_dataset = valid_dataset.batch(num_batch, drop_remainder=True).prefetch(AUTOTUNE)
 
-            # model, hist = run_expriment('efficient', train_dataset, valid_dataset, class_weights=None, optimizer='sgd', trainable=False, batch_size=N_BATCH, mc=False, epochs=50)
+                # model, hist = run_expriment('efficient', train_dataset, valid_dataset, class_weights=None, optimizer='sgd', trainable=False, batch_size=N_BATCH, mc=False, epochs=50)
 
-            sv = [tf.keras.callbacks.ModelCheckpoint(os.path.join(f'../../models/child_classification_infection/check_point_efficient_{time.strftime("%Y%m%d-%H%M%S")}.h5'), 
-                                                    monitor='val_accuracy', verbose=0, 
-                                                    save_best_only=True,save_weights_only=False, mode='max', 
-                                                    freq='epoch'), 
-            # tf.keras.callbacks.EarlyStopping(monitor = 'val_accuracy', 
-            #                                 patience = 4, 
-            #                                 mode='auto',
-            #                                 min_delta = 0.01)
-            # 
-            ]
+                sv = [tf.keras.callbacks.ModelCheckpoint(os.path.join(f'../../models/child_classification_infection/check_point_efficient_{time.strftime("%Y%m%d-%H%M%S")}.h5'), 
+                                                        monitor='val_accuracy', verbose=0, 
+                                                        save_best_only=True,save_weights_only=False, mode='max', 
+                                                        freq='epoch'), 
+                # tf.keras.callbacks.EarlyStopping(monitor = 'val_accuracy', 
+                #                                 patience = 4, 
+                #                                 mode='auto',
+                #                                 min_delta = 0.01)
+                # 
+                ]
 
-            hist = model.fit(train_dataset, 
-                            validation_data=valid_dataset,
-                            epochs = 100,
-                            verbose = 1,
-                            callbacks=[sv])  
+                hist = model.fit(train_dataset, 
+                                validation_data=valid_dataset,
+                                epochs = 100,
+                                verbose = 1,
+                                callbacks=[sv])  
 
 
             # evaluation
