@@ -212,7 +212,7 @@ if __name__ == '__main__':
         kfold = 0 
         for train_idx, valid_idx in skf.split(train_images, train_labels):
 
-            strategy = tf.distribute.MirroredStrategy()
+            strategy = tf.distribute.MirroredStrategy(devices=['/device:GPU:0', '/device:GPU:1', '/device:GPU:2'])
             options = tf.data.Options()
             # print("Number of devices: {}".format(strategy.num_replicas_in_sync))
 
