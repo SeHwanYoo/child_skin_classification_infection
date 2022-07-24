@@ -75,6 +75,9 @@ def create_train_list():
     for img in train_images: 
         lbl = img.split('/')[-2].lower().replace(' ', '')
         
+        if lbl in main.name_dict:
+            lbl = main.name_dict[lbl]
+        
         if lbl not in main.class_list:
             print(f'WARNING! NO FOUND CALASS : {lbl}')
         
