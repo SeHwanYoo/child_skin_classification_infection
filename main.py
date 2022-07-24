@@ -333,9 +333,11 @@ if __name__ == '__main__':
                 # model, hist = run_expriment('efficient', train_dataset, valid_dataset, class_weights=None, optimizer='sgd', trainable=False, batch_size=N_BATCH, mc=False, epochs=50)
 
                 sv = [tf.keras.callbacks.ModelCheckpoint(os.path.join(f'../../models/child_classification_infection/check_point_efficient_{time.strftime("%Y%m%d-%H%M%S")}.h5'), 
-                                                        monitor='val_accuracy', verbose=0, 
-                                                        save_best_only=True,save_weights_only=False, mode='max', 
-                                                        freq='epoch'), 
+                                                         monitor='val_accuracy', 
+                                                         verbose=0, 
+                                                         save_best_only=True,save_weights_only=False, 
+                                                         mode='max', 
+                                                         freq='epoch'), 
                 # tf.keras.callbacks.EarlyStopping(monitor = 'val_accuracy', 
                 #                                 patience = 4, 
                 #                                 mode='auto',
@@ -343,20 +345,20 @@ if __name__ == '__main__':
                 # 
                 ]
 
-            #     hist = model.fit(train_dataset, 
-            #                     validation_data=valid_dataset,
-            #                     epochs = 100,
-            #                     verbose = 1,
-            #                     callbacks=[sv])  
+                hist = model.fit(train_dataset, 
+                                validation_data=valid_dataset,
+                                epochs = 100,
+                                verbose = 1,
+                                callbacks=[sv])  
 
 
-            # # evaluation
-            # model.save(f'../../models/child_classification_infection/{time.strftime("%Y%m%d-%H%M%S")}_efficientb4_infection_kfold_{skf_num}_{kfold}.h5')
+            # evaluation
+            model.save(f'../../models/child_classification_infection/{time.strftime("%Y%m%d-%H%M%S")}_efficientb4_infection_kfold_{skf_num}_{kfold}.h5')
 
-            # # import pandas as pd
-            # hist_df = pd.DataFrame(hist.history)
-            # with open(f'../../models/child_classification_infection/{time.strftime("%Y%m%d-%H%M%S")}_efficientb4_infection_kfold_{skf_num}_{kfold}.csv', mode='w') as f:
-            #     hist_df.to_csv(f)
+            # import pandas as pd
+            hist_df = pd.DataFrame(hist.history)
+            with open(f'../../models/child_classification_infection/{time.strftime("%Y%m%d-%H%M%S")}_efficientb4_infection_kfold_{skf_num}_{kfold}.csv', mode='w') as f:
+                hist_df.to_csv(f)
 
-            # kfold += 1
+            kfold += 1
 
