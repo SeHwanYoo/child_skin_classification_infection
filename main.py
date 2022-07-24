@@ -71,138 +71,11 @@ infection_list = ['Abscess',
                 'Viral exanthem',
                 'Wart']
 
-    # if class_weights is None:
-    #     hist = model.fit(train_dataset, 
-    #                     validation_data=val_dataset,
-    #                     epochs = epochs,
-    #                     verbose = 0,
-    #                     callbacks=[sv])    
-    # else:
-    #     hist = model.fit(train_dataset.repeat(),
-    #                     validation_data = val_dataset,
-    #                     epochs = epochs,
-    #                     class_weight=class_weights, 
-    #                     verbose = 0,
-    #                     callbacks=[sv])
-    # return model, hist
-
-# def run_expriment(model_name, train_dataset, val_dataset, class_weights=None, optimizer='adam', trainable=False, batch_size=32, mc=False, epochs=100): 
-
-#     strategy = tf.distribute.MirroredStrategy()
-
-#     with strategy.scope():
-    
-#         if model_name == 'efficient':
-#             base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(N_RES, N_RES, 3),  weights = 'imagenet')
-#             base_model.trainable = trainable
-            
-#             inputs = keras.Input(shape=(N_RES, N_RES, 3))
-#             x = base_model(inputs)
-#             x = keras.layers.GlobalAveragePooling2D()(x) 
-#             x = get_dropout(x, mc)
-#             # x = keras.layers.Dense(N_CLASSES, activation='softmax')(x)
-#             x = keras.layers.Dense(1, activation='sigmoid')(x)
-#             model = tf.keras.Model(inputs=inputs, outputs=x)
-            
-#         # VGG16 
-#         else:
-#             base_model = keras.applications.VGG16(include_top=False, input_shape=(N_RES, N_RES, 3),  weights = 'imagenet')
-#             base_model.trainable = True
-            
-#             inputs = keras.Input(shape=(N_RES, N_RES, 3))
-#             x = base_model(inputs)
-#             x = keras.layers.Flatten(name = "avg_pool")(x) 
-#             x = keras.layers.Dense(512, activation='relu')(x)
-#             x = get_dropout(x, mc)
-#             x = keras.layers.Dense(256, activation='relu')(x)
-#             x = keras.layers.Dense(N_CLASSES, activation='softmax')(x)
-#             model = tf.keras.Model(inputs=inputs, outputs=x)
-            
-
-#         sv = [tf.keras.callbacks.ModelCheckpoint(os.path.join(f'{PATH}/models/{model_name}_mc-{mc}_bs-{batch_size}_{time.strftime("%Y%m%d-%H%M%S")}.h5'), 
-#                                                 monitor='val_accuracy', 
-#                                                 verbose=0, 
-#                                                 save_best_only=True,
-#                                                 save_weights_only=False, 
-#                                                 mode='max', 
-#                                                 save_freq='epoch'), 
-#             tf.keras.callbacks.EarlyStopping(monitor = 'val_accuracy', 
-#                                             patience = 4, 
-#                                             mode='auto',
-#                                             min_delta = 0.01)]
-
-        
-#         LR = 0.001
-#         # steps_per_epoch = len(train_images) // batch_size
-#         # lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(LR, steps_per_epoch*30, 0.1, True)
-        
-#         if optimizer == 'adam':
-#             optimizer = tf.keras.optimizers.Adam(LR)
-#         else:
-#             optimizer = tf.keras.optimizers.SGD(LR)
-        
-#         model.compile(loss='binary_crossentropy', 
-#                     optimizer = optimizer,
-#                     metrics=['accuracy'])
-
-
-#     if class_weights is None:
-#         hist = model.fit(train_dataset, 
-#                         validation_data=val_dataset,
-#                         epochs = epochs,
-#                         verbose = 0,
-#                         callbacks=[sv])    
-#     else:
-#         hist = model.fit(train_dataset.repeat(),
-#                         validation_data = val_dataset,
-#                         epochs = epochs,
-#                         class_weight=class_weights, 
-#                         verbose = 0,
-#                         callbacks=[sv])
-    
-    
-#     return model, hist
-
-# def create_dataset(images, labels, d_type='train', aug=False):
-    
-#     if d_type == 'test':
-#         return tf.data.Dataset.from_generator(test_skin_data, 
-#                                               output_types=(tf.float64, tf.float32), 
-#                                               output_shapes=(tf.TensorShape([N_RES, N_RES, 3]), tf.TensorShape([1])),
-#                                               args=[images, labels])
-        
-#     else:
-#         return tf.data.Dataset.from_generator(train_skin_data, 
-#                                               output_types=(tf.float64, tf.float32), 
-#                                               output_shapes=(tf.TensorShape([N_RES, N_RES, 3]), tf.TensorShape([1])),
-#                                               args=[images, labels, aug])
-        
-            
-# for i in range(7, 9): 
-#     # files = [val for val in list(train_dict.keys())]
-#     files = os.listdir(os.path.join(dataset, f'H{i}'))
-    
-#     for f in files:
-        
-#         imgs = glob(os.path.join(dataset, f'H{i}', f) + '/*.jpg')
-        
-#         key = 0 
-#         if f in infection_list:
-#             key = 1
-        
-#         if key in test_dict:
-#             test_dict[key] = test_dict[key] + len(imgs) 
-#         else:
-#             test_dict[key] = len(imgs) 
-            
+infection_list = list((map(lambda x : x.lower().replace(' ', ''), infection_list)))
 
 
 if __name__ == '__main__':
     
-    # all_dict, count_all_dict = dataset_generator.create_all_dict(dataset_path)
-    # num_classes = len(all_dict)
-    
-    # print(f'number of classes : {num_classes}')
 
     train_images, train_labels = dataset_generator.create_train_list()
 
@@ -219,7 +92,7 @@ if __name__ == '__main__':
             # Open a strategy scope.
             # def create_model(model_name, optimizer='adam', trainable=False, mc=False
             with strategy.scope():
-                model = models.create_model('mobilenet', 
+                model = models.create_model('efficient', 
                                             optimizer='sgd', 
                                             num_classes=num_classes, 
                                             trainable=True, 

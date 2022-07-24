@@ -73,7 +73,7 @@ def create_train_list():
     # test_labels = [] 
 
     for img in train_images: 
-        lbl = img.split('/')[-2]
+        lbl = img.split('/')[-2].lower().replace(' ', '')
         # lbl
         if lbl in main.infection_list:
             lbl = 1 
