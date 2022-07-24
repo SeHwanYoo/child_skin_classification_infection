@@ -46,6 +46,19 @@ num_classes = 1
 # PATH = '/data/snuh/datasets/Child Skin Disease'
 base_path = '../../datasets/Child Skin Disease'
 dataset_path = os.path.join(base_path, 'Total_Dataset')
+
+name_dict = {
+    'acnescarintegrated' : 'acnescar', # add 
+    'depressedscar' : 'acnescar', 
+    'acquiredtuftedhemangioma' : 'acquiredtuftedangioma', 
+    'acquiredtuftedhamangioma' : 'acquiredtuftedangioma', # add a and e
+    'cyst' : 'epidermalcyst', 
+    'cystintegrated' : 'epidermalcyst', # add
+    'infantilehemangioma' : 'hemangioma',
+    'hemangiomaintegrated' : 'hemangioma',
+    'ilven': 'inflammatorylinearverrucousepidermalnevus'
+}
+
 # effect positi
 infection_list = ['Abscess',
                 'Cellulitis',
