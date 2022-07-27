@@ -34,4 +34,7 @@ N_INFECTION = ['Abscess',
                 'Viral exanthem',
                 'Wart']
 
+N_INFECTION = list((map(lambda x : x.lower().replace(' ', ''), N_INFECTION)))
+
+
 N_CLASSES = 2

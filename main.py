@@ -29,7 +29,7 @@ import models
 AUTOTUNE = tf.data.AUTOTUNE
 
             
-train_dict, test_dict = dataset.create_dict()
+# train_dict, test_dict = dataset.create_dict()
 # N_CLASSES = len(train_dict)
 
 
@@ -40,6 +40,9 @@ train_dataset = tf.data.Dataset.from_generator(train_skin_data,
 test_dataset = tf.data.Dataset.from_generator(test_skin_data, 
                                               output_types=(tf.float64, tf.float32), 
                                               output_shapes=(tf.TensorShape([parameters.N_RES, parameters.N_RES, 3]), tf.TensorShape([parameters.N_CLASSES])))
+
+
+train_dataset = 
 
 
 # split_size = int(len(train_images) * 0.2)
