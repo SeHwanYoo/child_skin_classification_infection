@@ -47,9 +47,6 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
                 layer.trainable = False
         
         inputs = keras.Input(shape=(main.num_res, main.num_res, 3))
-        x = preprocess_input(inputs)
-        x = data_augmentation(x) 
-        
         x = base_model(inputs)
         x = keras.layers.GlobalAveragePooling2D()(x) 
         x = get_dropout(x, mc)
@@ -70,7 +67,9 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
                 layer.trainable = False
         
         inputs = keras.Input(shape=(main.num_res, main.num_res, 3))
-        x = base_model(inputs)
+        x = preprocess_input(inputs)
+        x = data_augmentation(x) 
+        x = base_model(x)
         x = keras.layers.GlobalAveragePooling2D()(x) 
         x = get_dropout(x, mc)
         # x = keras.layers.Dense(N_CLASSES, activation='softmax')(x)
