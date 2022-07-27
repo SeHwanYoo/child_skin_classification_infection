@@ -3,8 +3,10 @@ from tensorflow import keras
 from tensorflow.keras import layers 
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Input, Conv2D, Activation, MaxPooling2D, Dropout, Flatten
-import numpy as np
 
+from keras.applications.resnet50 import preprocess_input
+
+import numpy as np
 import main
 
 def get_dropout(input_tensor, p=0.3, mc=False):
@@ -27,13 +29,39 @@ def create_class_weight(train_dict):
 
 def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, num_trainable=100, mc=False): 
 
-    # strategy = tf.distribute.MirroredStrategy()
-
-    # with strategy.scope():
+    data_augmentation = tf.keras.Sequential([
+        layers.RandomRotation(factor=0.15),
+        layers.RandomTranslation(height_factor=0.1, width_factor=0.1),
+        layers.RandomFlip(),
+        layers.RandomContrast(factor=0.1),
+    ])
     
     if model_name == 'efficient':
         base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(main.num_res, main.num_res, 3),  weights = 'imagenet')
         # base_model.trainable = trainable
+        
+        base_model.trainable = trainable
+        
+        if trainable:
+            for layer in base_model.layers[:num_trainable]:
+                layer.trainable = False
+        
+        inputs = keras.Input(shape=(main.num_res, main.num_res, 3))
+        x = preprocess_input(inputs)
+        x = data_augmentation(x) 
+        
+        x = base_model(inputs)
+        x = keras.layers.GlobalAveragePooling2D()(x) 
+        x = get_dropout(x, mc)
+        # x = keras.layers.Dense(N_CLASSES, activation='softmax')(x)
+        x = keras.layers.Dense(1, activation='sigmoid')(x)
+        model = tf.keras.Model(inputs=inputs, outputs=x)
+        
+    elif model_name == 'resnet':
+        if model_name == 'efficient':
+            base_model = keras.applications.resnet50.ResNet50(include_top=False, 
+                                                              input_shape=(main.num_res, main.num_res, 3),  
+                                                              weights = 'imagenet')
         
         base_model.trainable = trainable
         
