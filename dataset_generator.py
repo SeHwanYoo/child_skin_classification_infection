@@ -77,7 +77,7 @@ def create_train_list():
             lbl = parameters.name_dict[lbl][0]
         
         # lbl
-        if lbl in main.infection_list:
+        if lbl in parameters.infection_list:
             lbl = 1 
         else:
             lbl = 0 
