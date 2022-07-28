@@ -2,7 +2,9 @@
 # from main import N_CLASSES
 import os
 
-base_path = 'C:/Users/user/Desktop/datasets/Child Skin Disease'
+# base_path = 'C:/Users/user/Desktop/data/sets/Child Skin Disease'
+# base_path = 'C:/Users/user/Desktop/data/sets/Child Skin Disease'
+base_path = '../../datasets/Child Skin Disease'
 dataset_path = os.path.join(base_path, 'Total_Dataset')
 
 
