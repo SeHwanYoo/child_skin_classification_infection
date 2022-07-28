@@ -3,11 +3,25 @@ from tensorflow import keras
 from tensorflow.keras import layers 
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Input, Conv2D, Activation, MaxPooling2D, Dropout, Flatten
-
 from keras.applications.resnet50 import preprocess_input
+
+import math 
 
 import numpy as np
 import main
+
+class CustomSchedule(keras.optimizers.schedules.LearningRateSchedule):
+    def __init__(self, max_lr, warmup_steps, decay_steps):
+        super(CustomSchedule, self).__init__()
+        self.max_lr = max_lr
+        self.warmup_steps = warmup_steps
+        self.decay_steps = decay_steps
+
+    def __call__(self, step):
+        lr = tf.cond(step < self.warmup_steps, 
+                    lambda: self.max_lr / self.warmup_steps * step, 
+                    lambda: 0.5 * (1+tf.math.cos(math.pi * (step - self.warmup_steps) / self.decay_steps))*self.max_lr)
+        return lr
 
 def get_dropout(input_tensor, p=0.3, mc=False):
     if mc: 
@@ -27,7 +41,7 @@ def create_class_weight(train_dict):
 
     return class_weight
 
-def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, num_trainable=100, mc=False): 
+def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, num_trainable=100, mc=False, batch_size=32, train_length=100, epochs=100): 
 
     data_augmentation = tf.keras.Sequential([
         layers.RandomRotation(factor=0.15),
@@ -106,14 +120,18 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
         x = keras.layers.Dense(num_classes, activation='softmax')(x)
         model = tf.keras.Model(inputs=inputs, outputs=x)
 
+    # LR = 0.001
     LR = 0.001
+    steps_per_epoch = (train_length / batch_size)
+    lr_schedule = CustomSchedule(LR, 3*steps_per_epoch, epochs * steps_per_epoch)
+
     if optimizer == 'adam':
-        optimizer = tf.keras.optimizers.Adam(LR)
+        optimizer = tf.keras.optimizers.Adam(lr_schedule)
     else:
-        optimizer = tf.keras.optimizers.SGD(LR)
+        optimizer = tf.keras.optimizers.SGD(lr_schedule)
         
     model.compile(loss='binary_crossentropy', 
-                optimizer=optimizer,
-                metrics=['accuracy'])
+                  optimizer=optimizer,
+                  metrics=['accuracy'])
 
     return model

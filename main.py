@@ -56,20 +56,23 @@ for skf_num in [5, 10]:
             strategy = tf.distribute.MirroredStrategy(devices=['/device:GPU:0', '/device:GPU:1', '/device:GPU:2'],
                                                       cross_device_ops=tf.distribute.HierarchicalCopyAllReduce())
             with strategy.scope():
-                model = models.create_model('efficient', 
-                                            optimizer='sgd', 
-                                            num_classes=parameters.num_classes, 
-                                            trainable=True, 
-                                            num_trainable=-2)
-
+                
                 train_dataset = dataset_generator.create_dataset(train_images[train_idx], train_labels[train_idx], aug=False) 
                 valid_dataset = dataset_generator.create_dataset(train_images[valid_idx], train_labels[valid_idx]) 
                 
-                # train_dataset = train_dataset.with_options(options)
-                # valid_dataset = valid_dataset.with_options(options)
 
                 train_dataset = train_dataset.batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
                 valid_dataset = valid_dataset.batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
+                
+                model = models.create_model('resnet', 
+                                            optimizer='sgd', 
+                                            num_classes=parameters.num_classes, 
+                                            trainable=True, 
+                                            num_trainable=-2,
+                                            batch_size=parameters.num_batch,
+                                            train_length=len(train_images[train_idx]))
+
+                
 
                 # model, hist = run_expriment('efficient', train_dataset, valid_dataset, class_weights=None, optimizer='sgd', trainable=False, batch_size=N_BATCH, mc=False, epochs=50)
                 
