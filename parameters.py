@@ -2,8 +2,8 @@
 # from main import N_CLASSES
 import os
 
-N_PATH = 'C:/Users/user/Desktop/datasets/Child Skin Disease'
-N_DATASET = os.path.join(N_PATH, 'Total_Dataset')
+base_path = 'C:/Users/user/Desktop/datasets/Child Skin Disease'
+dataset_path = os.path.join(base_path, 'Total_Dataset')
 
 
 num_res = 256 

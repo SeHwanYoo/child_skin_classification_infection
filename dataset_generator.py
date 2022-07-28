@@ -54,11 +54,11 @@ def create_train_list():
     for i in range(6):
         # for key in train_dict.keys():
         
-        img = glob(main.dataset_path + f'/H{str(i)}/*/*.jpg')
+        img = glob(parameters.dataset_path + f'/H{str(i)}/*/*.jpg')
         train_images.extend(img) 
 
     # add JeonNam unv
-    img = glob(main.dataset_path + '/H9/*/*.jpg')
+    img = glob(parameters.dataset_path + '/H9/*/*.jpg')
     train_images.extend(img) 
             
     random.shuffle(train_images)
