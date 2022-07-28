@@ -6,8 +6,9 @@ N_PATH = 'C:/Users/user/Desktop/datasets/Child Skin Disease'
 N_DATASET = os.path.join(N_PATH, 'Total_Dataset')
 
 
-N_RES = 256 
-N_BATCH = 32 
+num_res = 256 
+num_batch = 32 
+num_classes = 2
 
 
 name_dict = {
@@ -47,12 +48,10 @@ infection_list = ['Abscess',
                 'Viral exanthem',
                 'Wart']
 
-<<<<<<< HEAD
 N_INFECTION = list((map(lambda x : x.lower().replace(' ', ''), N_INFECTION)))
 
 
 N_CLASSES = 2
-=======
 infection_list = list((map(lambda x : x.lower().replace(' ', ''), infection_list)))
 
 
@@ -265,4 +264,3 @@ class_list = [
 ]
 
 class_list = list((map(lambda x : x.lower().replace(' ', ''), class_list)))
->>>>>>> 256692580b42cfbe3027198b9251db2ed86426e1

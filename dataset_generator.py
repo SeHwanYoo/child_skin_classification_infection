@@ -6,44 +6,45 @@ import random
 import numpy as np
 
 import main
+import parameters
 
-def create_all_dict():
-    train_dict = {}
-    # test_dict = {} 
+# def create_all_dict():
+#     train_dict = {}
+#     # test_dict = {} 
 
-    for i in range(6):
-        files = os.listdir(os.path.join(main.dataset_path, f'H{i}'))
+#     for i in range(6):
+#         files = os.listdir(os.path.join(main.dataset_path, f'H{i}'))
         
-        for f in files: 
+#         for f in files: 
                 
-            imgs = glob(os.path.join(main.dataset_path, f'H{i}', f) + '/*.jpg')
+#             imgs = glob(os.path.join(main.dataset_path, f'H{i}', f) + '/*.jpg')
             
-            key = 0 
-            if f in main.infection_list:
-                key = 1
+#             key = 0 
+#             if f in main.infection_list:
+#                 key = 1
                 
-            if key in train_dict:
-                train_dict[key] = train_dict[key] + len(imgs)
-            else:
-                train_dict[key] = len(imgs)
+#             if key in train_dict:
+#                 train_dict[key] = train_dict[key] + len(imgs)
+#             else:
+#                 train_dict[key] = len(imgs)
 
-    # add JeonNam unv 
-    files = os.listdir(os.path.join(main.dataset_path, 'H9'))
+#     # add JeonNam unv 
+#     files = os.listdir(os.path.join(main.dataset_path, 'H9'))
 
-    for f in files: 
+#     for f in files: 
                 
-        imgs = glob(os.path.join(main.dataset_path, 'H9', f) + '/*.jpg')
+#         imgs = glob(os.path.join(main.dataset_path, 'H9', f) + '/*.jpg')
 
-        key = 0 
-        if f in main.infection_list:
-            key = 1
+#         key = 0 
+#         if f in main.infection_list:
+#             key = 1
 
-        if key in train_dict:
-            train_dict[key] = train_dict[key]+ len(imgs)
-        else:
-            train_dict[key] = len(imgs)
+#         if key in train_dict:
+#             train_dict[key] = train_dict[key]+ len(imgs)
+#         else:
+#             train_dict[key] = len(imgs)
             
-    return train_dict
+#     return train_dict
 
 
 def create_train_list():
@@ -60,26 +61,20 @@ def create_train_list():
     img = glob(main.dataset_path + '/H9/*/*.jpg')
     train_images.extend(img) 
             
-    # for i in range(7, 9):
-    #     # for key in train_dict.keys():
-    #     img = glob(main.dataset_path + f'/H{str(i)}/*/*.jpg')
-    #     test_images.extend(img) 
-            
-            
     random.shuffle(train_images)
-    # random.shuffle(test_images)
 
     train_labels = [] 
-    # test_labels = [] 
-
     for img in train_images: 
         lbl = img.split('/')[-2].lower().replace(' ', '')
         
-        if lbl in main.name_dict:
-            lbl = main.name_dict[lbl]
+        # if lbl in main.name_dict:
+        #     lbl = main.name_dict[lbl]
         
-        if lbl not in main.class_list:
-            print(f'WARNING! NO FOUND CALASS : {lbl}')
+        # if lbl not in main.class_list:
+        #     print(f'WARNING! NO FOUND CALASS : {lbl}')
+        
+        if lbl in parameters.name_dict:
+            lbl = parameters.name_dict[lbl][0]
         
         # lbl
         if lbl in main.infection_list:
