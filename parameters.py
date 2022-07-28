@@ -11,16 +11,28 @@ num_batch = 32
 num_classes = 2
 
 
+# name_dict = {
+#     'acnescarintegrated' : 'acnescar', # add 
+#     'depressedscar' : 'acnescar', 
+#     'acquiredtuftedhemangioma' : 'acquiredtuftedangioma', 
+#     'acquiredtuftedhamangioma' : 'acquiredtuftedangioma', # add a and e
+#     'cyst' : 'epidermalcyst', 
+#     'cystintegrated' : 'epidermalcyst', # add
+#     'infantilehemangioma' : 'hemangioma',
+#     'hemangiomaintegrated' : 'hemangioma',
+#     'ilven': 'inflammatorylinearverrucousepidermalnevus'
+# }
+
 name_dict = {
-    'acnescarintegrated' : 'acnescar', # add 
-    'depressedscar' : 'acnescar', 
-    'acquiredtuftedhemangioma' : 'acquiredtuftedangioma', 
-    'acquiredtuftedhamangioma' : 'acquiredtuftedangioma', # add a and e
-    'cyst' : 'epidermalcyst', 
-    'cystintegrated' : 'epidermalcyst', # add
-    'infantilehemangioma' : 'hemangioma',
-    'hemangiomaintegrated' : 'hemangioma',
-    'ilven': 'inflammatorylinearverrucousepidermalnevus'
+    'acnescarintegrated' : ['Acne scar', 'acnescar'], # add 
+    'depressedscar' : ['Acne scar', 'acnescar'], 
+    'acquiredtuftedhemangioma' : ['Acquired tufted angioma', 'acquiredtuftedangioma'], 
+    'acquiredtuftedhamangioma' : ['Acquired tufted angioma','acquiredtuftedangioma'], # add a and e
+    'cyst' : ['Epidermal cyst', 'epidermalcyst'], 
+    'cystintegrated' : ['Epidermal cyst', 'epidermalcyst'], # add
+    'infantilehemangioma' : ['Hemangioma', 'hemangioma'],
+    'hemangiomaintegrated' : ['Hemangioma', 'hemangioma'],
+    'ilven': ['Inflammatory linear verrucous epidermal nevus', 'inflammatorylinearverrucousepidermalnevus']
 }
 
 # effect positi
