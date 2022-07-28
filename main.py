@@ -53,7 +53,8 @@ for skf_num in [5, 10]:
         kfold = 0 
         for train_idx, valid_idx in skf.split(train_images, train_labels):
             
-            strategy = tf.distribute.MirroredStrategy()
+            strategy = tf.distribute.MirroredStrategy(devices=['/device:GPU:0', '/device:GPU:1', '/device:GPU:2'],
+                                                      cross_device_ops=tf.distribute.HierarchicalCopyAllReduce())
             with strategy.scope():
                 model = models.create_model('efficient', 
                                             optimizer='sgd', 
