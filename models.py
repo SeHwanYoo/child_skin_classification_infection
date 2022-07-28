@@ -3,7 +3,7 @@ from tensorflow import keras
 from tensorflow.keras import layers 
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Input, Conv2D, Activation, MaxPooling2D, Dropout, Flatten
-from keras.applications.resnet50 import preprocess_input
+from tensorflow.keras.applications.resnet50 import preprocess_input
 
 import math 
 
