@@ -97,13 +97,13 @@ def create_dataset(images, labels, d_type='train', aug=False):
     if d_type == 'test':
         return tf.data.Dataset.from_generator(test_skin_data, 
                                               output_types=(tf.float64, tf.float32), 
-                                              output_shapes=(tf.TensorShape([main.num_res, main.num_res, 3]), tf.TensorShape([1])),
+                                              output_shapes=(tf.TensorShape([parameters.num_res, parameters.num_res, 3]), tf.TensorShape([1])),
                                               args=[images, labels])
         
     else:
         return tf.data.Dataset.from_generator(train_skin_data, 
                                               output_types=(tf.float64, tf.float32), 
-                                              output_shapes=(tf.TensorShape([main.num_res, main.num_res, 3]), tf.TensorShape([1])),
+                                              output_shapes=(tf.TensorShape([parameters.num_res, parameters.num_res, 3]), tf.TensorShape([1])),
                                               args=[images, labels, aug])
     # return train_dct
     
@@ -239,7 +239,7 @@ def train_skin_data(images, labels, aug):
         img = img[0].decode('utf-8')
         img = cv2.imread(img, cv2.COLOR_BGR2RGB)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img = cv2.resize(img, (main.num_res, main.num_res))
+        img = cv2.resize(img, (parameters.num_res, parameters.num_res))
         # img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
 
         # print(f'=================>{f}')
@@ -297,7 +297,7 @@ def test_skin_data(images, labels,):
         
         img = cv2.imread(img, cv2.COLOR_BGR2RGB)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img = cv2.resize(img, (main.num_res, main.num_res))
+        img = cv2.resize(img, (parameters.num_res, parameters.num_res))
         # img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
         
         # key = 0 
