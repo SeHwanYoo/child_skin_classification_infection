@@ -9,6 +9,7 @@ import math
 
 import numpy as np
 import main
+import parameters as parms
 
 class CustomSchedule(keras.optimizers.schedules.LearningRateSchedule):
     def __init__(self, max_lr, warmup_steps, decay_steps):
@@ -23,12 +24,12 @@ class CustomSchedule(keras.optimizers.schedules.LearningRateSchedule):
                     lambda: 0.5 * (1+tf.math.cos(math.pi * (step - self.warmup_steps) / self.decay_steps))*self.max_lr)
         return lr
 
-def get_dropout(input_tensor, p=0.3, mc=False):
-    if mc: 
-        layer = Dropout(p, name='top_dropout')
-        return layer(input_tensor, training=True)
-    else:
-        return Dropout(p, name='top_dropout')(input_tensor, training=False)
+# def get_dropout(input_tensor, p=0.3, mc=False):
+#     if mc: 
+#         layer = Dropout(p, name='top_dropout')
+#         return layer(input_tensor, training=True)
+#     else:
+#         return Dropout(p, name='top_dropout')(input_tensor, training=False)
     
 
 def create_class_weight(train_dict):
@@ -51,7 +52,7 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
     ])
     
     if model_name == 'efficient':
-        base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(main.num_res, main.num_res, 3),  weights = 'imagenet')
+        base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(parms.num_res, parms.num_res, 3),  weights = 'imagenet')
         # base_model.trainable = trainable
         
         base_model.trainable = trainable
@@ -60,10 +61,11 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
             for layer in base_model.layers[:num_trainable]:
                 layer.trainable = False
         
-        inputs = keras.Input(shape=(main.num_res, main.num_res, 3))
+        inputs = keras.Input(shape=(parms.num_res, parms.num_res, 3))
         x = base_model(inputs)
         x = keras.layers.GlobalAveragePooling2D()(x) 
-        x = get_dropout(x, mc)
+        # x = get_dropout(x, mc)
+        x = Dropout(0.3)(x)
         # x = keras.layers.Dense(N_CLASSES, activation='softmax')(x)
         x = keras.layers.Dense(1, activation='sigmoid')(x)
         model = tf.keras.Model(inputs=inputs, outputs=x)
@@ -71,7 +73,7 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
     elif model_name == 'resnet':
         if model_name == 'efficient':
             base_model = keras.applications.resnet50.ResNet50(include_top=False, 
-                                                              input_shape=(main.num_res, main.num_res, 3),  
+                                                              input_shape=(parms.num_res, parms.num_res, 3),  
                                                               weights = 'imagenet')
         
         base_model.trainable = trainable
@@ -80,42 +82,45 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
             for layer in base_model.layers[:num_trainable]:
                 layer.trainable = False
         
-        inputs = keras.Input(shape=(main.num_res, main.num_res, 3))
+        inputs = keras.Input(shape=(parms.num_res, parms.num_res, 3))
         x = preprocess_input(inputs)
         x = data_augmentation(x) 
         x = base_model(x)
         x = keras.layers.GlobalAveragePooling2D()(x) 
-        x = get_dropout(x, mc)
+        # x = get_dropout(x, mc)
+        x = Dropout(0.3)(x)
         # x = keras.layers.Dense(N_CLASSES, activation='softmax')(x)
         x = keras.layers.Dense(1, activation='sigmoid')(x)
         model = tf.keras.Model(inputs=inputs, outputs=x)
         
     elif model_name == 'mobilenet':
-        base_model = keras.applications.MobileNetV2(include_top=False, input_shape=(main.num_res, main.num_res, 3),  weights = 'imagenet')
+        base_model = keras.applications.MobileNetV2(include_top=False, input_shape=(parms.num_res, parms.num_res, 3),  weights = 'imagenet')
 
         base_model.trainable = trainable
         if trainable:
             for layer in base_model.layers[:num_trainable]:
                 layer.trainable = False
 
-        inputs = keras.Input(shape=(main.num_res, main.num_res, 3))
+        inputs = keras.Input(shape=(parms.num_res, parms.num_res, 3))
         x = base_model(inputs)
         x = keras.layers.GlobalAveragePooling2D()(x) 
-        x = get_dropout(x, mc)
+        # x = get_dropout(x, mc)
+        x = Dropout(0.3)(x)
         # x = keras.layers.Dense(N_CLASSES, activation='softmax')(x)
         x = keras.layers.Dense(1, activation='sigmoid')(x)
         model = tf.keras.Model(inputs=inputs, outputs=x)
         
     # VGG16 
     else:
-        base_model = keras.applications.VGG16(include_top=False, input_shape=(main.num_res, main.num_res, 3),  weights = 'imagenet')
+        base_model = keras.applications.VGG16(include_top=False, input_shape=(parms.num_res, parms.num_res, 3),  weights = 'imagenet')
         base_model.trainable = True
         
-        inputs = keras.Input(shape=(main.num_res, main.num_res, 3))
+        inputs = keras.Input(shape=(parms.num_res, parms.num_res, 3))
         x = base_model(inputs)
         x = keras.layers.Flatten(name = "avg_pool")(x) 
         x = keras.layers.Dense(512, activation='relu')(x)
-        x = get_dropout(x, mc)
+        # x = get_dropout(x, mc)
+        x = Dropout(0.3)(x)
         x = keras.layers.Dense(256, activation='relu')(x)
         x = keras.layers.Dense(num_classes, activation='softmax')(x)
         model = tf.keras.Model(inputs=inputs, outputs=x)
