@@ -11,18 +11,18 @@ import numpy as np
 import main
 import parameters as parms
 
-class CustomSchedule(keras.optimizers.schedules.LearningRateSchedule):
-    def __init__(self, max_lr, warmup_steps, decay_steps):
-        super(CustomSchedule, self).__init__()
-        self.max_lr = max_lr
-        self.warmup_steps = warmup_steps
-        self.decay_steps = decay_steps
+# class CustomSchedule(keras.optimizers.schedules.LearningRateSchedule):
+#     def __init__(self, max_lr, warmup_steps, decay_steps):
+#         super(CustomSchedule, self).__init__()
+#         self.max_lr = max_lr
+#         self.warmup_steps = warmup_steps
+#         self.decay_steps = decay_steps
 
-    def __call__(self, step):
-        lr = tf.cond(step < self.warmup_steps, 
-                    lambda: self.max_lr / self.warmup_steps * step, 
-                    lambda: 0.5 * (1+tf.math.cos(math.pi * (step - self.warmup_steps) / self.decay_steps))*self.max_lr)
-        return lr
+#     def __call__(self, step):
+#         lr = tf.cond(step < self.warmup_steps, 
+#                     lambda: self.max_lr / self.warmup_steps * step, 
+#                     lambda: 0.5 * (1+tf.math.cos(math.pi * (step - self.warmup_steps) / self.decay_steps))*self.max_lr)
+#         return lr
 
 # def get_dropout(input_tensor, p=0.3, mc=False):
 #     if mc: 
@@ -128,7 +128,8 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
     # LR = 0.001
     LR = 0.001
     steps_per_epoch = (train_length / batch_size)
-    lr_schedule = CustomSchedule(LR, 3*steps_per_epoch, epochs * steps_per_epoch)
+    # lr_schedule = CustomSchedule(LR, 3*steps_per_epoch, epochs * steps_per_epoch)
+    lr_schedule = keras.optimizers.schedules.ExponentialDecay(LR, steps_per_epoch*30, 0.1, True)
 
     if optimizer == 'adam':
         optimizer = tf.keras.optimizers.Adam(lr_schedule)
