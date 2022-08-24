@@ -54,7 +54,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     gpus = []
-    for gpu in range(args.gpus):
+    for gpu in range(int(args.gpus)):
         gpus.append(f'/GPU:{gpu}')
     
     train_images, train_labels = dataset_generator.create_train_list() 
@@ -92,21 +92,20 @@ if __name__ == '__main__':
                     
 
                     checkpoints1 = [tf.keras.callbacks.ModelCheckpoint(filepath, 
-                                                                    monitor='val_accuracy', 
-                                                                    verbose=0, 
-                                                                    save_best_only=True,
-                                                                    save_weights_only=False, 
-                                                                    mode='max', 
-                                                                    freq='epoch')]
+                                                                       monitor='val_accuracy', 
+                                                                       verbose=0, 
+                                                                       save_best_only=True,
+                                                                       save_weights_only=False, 
+                                                                       mode='max', 
+                                                                       freq='epoch')]
                     
-                     
                     checkpoints2 = [tf.keras.callbacks.ModelCheckpoint(filepath, 
-                                                                    monitor='val_loss', 
-                                                                    verbose=0, 
-                                                                    save_best_only=True,
-                                                                    save_weights_only=False, 
-                                                                    mode='min', 
-                                                                    freq='epoch')]
+                                                                       monitor='val_loss', 
+                                                                       verbose=0, 
+                                                                       save_best_only=True,
+                                                                       save_weights_only=False, 
+                                                                       mode='min', 
+                                                                       freq='epoch')]
                     
                     hist = model.fit(train_dataset, 
                                     validation_data=valid_dataset,
