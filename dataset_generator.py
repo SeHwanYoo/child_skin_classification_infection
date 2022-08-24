@@ -146,7 +146,8 @@ def create_dataset(images, labels, d_type='train'):
             args=[images, labels])
 
 # def train_skin_data(files):
-def train_skin_data(images, labels, aug):
+def train_skin_data(images, labels):
+    
     for img, lbl in zip(images, labels):
     
         img = img[0].decode('utf-8')
