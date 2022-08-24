@@ -11,7 +11,7 @@ import parameters
 
 def aug1(img, lbl):
     # shape augmentation
-    img = tf.image.random_crop(img, [main.num_res, main.num_res, 3])
+    img = tf.image.random_crop(img, [parameters.num_res, parameters.num_res, 3])
     img = tf.image.random_flip_left_right(img)
     img = tf.image.flip_up_down(img)
     
