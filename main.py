@@ -57,7 +57,9 @@ if __name__ == '__main__':
     for gpu in range(int(args.gpus)):
         gpus.append(f'/GPU:{gpu}')
     
-    train_images, train_labels = dataset_generator.create_train_list() 
+    train_images, train_labels = dataset_generator.create_train_list(part=args.part) 
+    
+    print(f'{len(train_images)} images were founded')
                 
     for skf_num in [5, 10]:
             skf = StratifiedKFold(n_splits=skf_num)
