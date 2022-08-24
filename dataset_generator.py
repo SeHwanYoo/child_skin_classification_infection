@@ -56,9 +56,9 @@ def aug(img, label):
 
 def create_train_list(part='head'):
     train_images = [] 
-    test_images = []
+    # test_images = []
 
-    for i in range(6):
+    for i in range(7):
         # for key in train_dict.keys():
         
         img = glob(parameters.dataset_path + f'/H{str(i)}/*/{part}/*.jpg')
