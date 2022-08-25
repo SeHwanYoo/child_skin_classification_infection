@@ -72,7 +72,7 @@ def create_train_list(part='head'):
 
     train_labels = [] 
     for img in train_images: 
-        lbl = img.split('/')[-2]
+        lbl = img.split('/')[-3]
         
         # if lbl in parameters.name_dict:
         #     lbl = parameters.name_dict[lbl][0]
@@ -115,7 +115,7 @@ def create_test_list(part='head'):
 
     test_labels = [] 
     for img in test_images: 
-        lbl = img.split('/')[-2]
+        lbl = img.split('/')[-3]
         
         if lbl.lower().replace(' ', '') in parameters.name_dict1:
             lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
