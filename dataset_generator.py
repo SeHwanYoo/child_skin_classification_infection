@@ -79,6 +79,8 @@ def create_train_list(part='head'):
         
         if lbl.lower().replace(' ', '') in parameters.name_dict1:
             lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
+            
+        print(f'-------------------------------> {lbl}')
         
         # lbl
         if lbl in parameters.infection_list:
