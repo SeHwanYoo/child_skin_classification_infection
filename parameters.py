@@ -26,19 +26,6 @@ name_dict1 = {
 }
 
 
-
-# name_dict = {
-#     'acnescarintegrated' : 'acnescar', # add 
-#     'depressedscar' : 'acnescar', 
-#     'acquiredtuftedhemangioma' : 'acquiredtuftedangioma', 
-#     'acquiredtuftedhamangioma' : 'acquiredtuftedangioma', # add a and e
-#     'cyst' : 'epidermalcyst', 
-#     'cystintegrated' : 'epidermalcyst', # add
-#     'infantilehemangioma' : 'hemangioma',
-#     'hemangiomaintegrated' : 'hemangioma',
-#     'ilven': 'inflammatorylinearverrucousepidermalnevus'
-# }
-
 name_dict = {
     'acnescarintegrated' : ['Acne scar', 'acnescar'], # add 
     'depressedscar' : ['Acne scar', 'acnescar'], 
@@ -80,7 +67,7 @@ infection_list = ['Abscess',
 
 
 N_CLASSES = 2
-infection_list = list((map(lambda x : x.lower().replace(' ', ''), infection_list)))
+# infection_list = list((map(lambda x : x.lower().replace(' ', ''), infection_list)))
 
 
 class_list = [
@@ -291,4 +278,4 @@ class_list = [
 "Xerotic eczema",
 ]
 
-class_list = list((map(lambda x : x.lower().replace(' ', ''), class_list)))
+# class_list = list((map(lambda x : x.lower().replace(' ', ''), class_list)))

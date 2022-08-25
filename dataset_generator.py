@@ -72,10 +72,13 @@ def create_train_list(part='head'):
 
     train_labels = [] 
     for img in train_images: 
-        lbl = img.split('/')[-2].lower().replace(' ', '')
+        lbl = img.split('/')[-2]
         
-        if lbl in parameters.name_dict:
-            lbl = parameters.name_dict[lbl][0]
+        # if lbl in parameters.name_dict:
+        #     lbl = parameters.name_dict[lbl][0]
+        
+        if lbl.lower().replace(' ', '') in parameters.name_dict1:
+            lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
         
         # lbl
         if lbl in parameters.infection_list:
@@ -84,7 +87,9 @@ def create_train_list(part='head'):
             lbl = 0 
 
         train_labels.append(lbl) 
-
+        
+    
+    print(f'Non-infection found : {train_labels.count(0)}, Infection found : {train_labels.count(1)}')
 
     train_images = np.reshape(train_images, [-1, 1])
     train_labels = np.reshape(train_labels, [-1, 1])
@@ -95,9 +100,8 @@ def create_train_list(part='head'):
 def create_test_list(part='head'):
     test_images = []
 
-    for i in range(6):
+    for i in [7, 8]:
         # for key in train_dict.keys():
-        
         img = glob(parameters.dataset_path + f'/H{str(i)}/*/{part}/*.jpg')
         test_images.extend(img) 
 
@@ -109,10 +113,10 @@ def create_test_list(part='head'):
 
     test_labels = [] 
     for img in test_images: 
-        lbl = img.split('/')[-2].lower().replace(' ', '')
+        lbl = img.split('/')[-2]
         
-        if lbl in parameters.name_dict:
-            lbl = parameters.name_dict[lbl][0]
+        if lbl.lower().replace(' ', '') in parameters.name_dict1:
+            lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
         
         # lbl
         if lbl in parameters.infection_list:
@@ -151,9 +155,6 @@ def train_skin_data(images, labels):
     for img, lbl in zip(images, labels):
     
         img = img[0].decode('utf-8')
-        # img = cv2.imread(img, cv2.COLOR_BGR2RGB)
-        # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        # img = cv2.resize(img, (parameters.num_res, parameters.num_res))
         img_path = img
         img = tf.io.read_file(img) 
         try:
