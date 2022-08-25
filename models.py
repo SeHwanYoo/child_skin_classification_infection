@@ -83,7 +83,7 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
                 layer.trainable = False
         
         inputs = keras.Input(shape=(parms.num_res, parms.num_res, 3))
-        x = preprocess_input(inputs)
+        x = keras.applications.resnet50.preprocess_input(inputs)
         x = data_augmentation(x) 
         x = base_model(x)
         x = keras.layers.GlobalAveragePooling2D()(x) 
@@ -102,6 +102,7 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
                 layer.trainable = False
 
         inputs = keras.Input(shape=(parms.num_res, parms.num_res, 3))
+        # x = keras.applications.mobilenetv2.pre
         x = base_model(inputs)
         x = keras.layers.GlobalAveragePooling2D()(x) 
         # x = get_dropout(x, mc)
@@ -116,6 +117,7 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
         base_model.trainable = True
         
         inputs = keras.Input(shape=(parms.num_res, parms.num_res, 3))
+        # x = keras.applications.vgg16.prepro
         x = base_model(inputs)
         x = keras.layers.Flatten(name = "avg_pool")(x) 
         x = keras.layers.Dense(512, activation='relu')(x)

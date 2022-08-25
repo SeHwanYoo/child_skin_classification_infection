@@ -13,6 +13,19 @@ num_res = 256
 num_batch = 32 
 num_classes = 2
 
+name_dict1 = {
+    'acnescarintegrated' : 'Acne scar', # add 
+    'depressedscar' : 'Acne scar', 
+    'acquiredtuftedhemangioma' : 'Acquired tufted angioma', 
+    'acquiredtuftedhamangioma' : 'Acquired tufted angioma', # add a and e
+    'cyst' : 'Epidermal cyst', 
+    'cystintegrated' : 'Epidermalcyst', # add
+    'infantilehemangioma' : 'Hemangioma',
+    'hemangiomaintegrated' : 'Hemangioma',
+    'ilven': 'Inflammatory linear verrucous epidermal nevus'
+}
+
+
 
 # name_dict = {
 #     'acnescarintegrated' : 'acnescar', # add 
