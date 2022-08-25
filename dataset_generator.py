@@ -154,9 +154,14 @@ def train_skin_data(images, labels):
         # img = cv2.imread(img, cv2.COLOR_BGR2RGB)
         # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         # img = cv2.resize(img, (parameters.num_res, parameters.num_res))
-        
+        img_path = img
         img = tf.io.read_file(img) 
-        img = tf.io.decode_image(img, dtype=tf.float64)
+        try:
+            img = tf.io.decode_image(img, dtype=tf.float64)
+        except:
+            print(f'{img_path} is crushed')
+            continue
+            
         img = tf.image.resize(img, [parameters.num_res, parameters.num_res])
 
         yield (img, lbl)    
@@ -169,8 +174,14 @@ def test_skin_data(images, labels,):
         # img = cv2.imread(img, cv2.COLOR_BGR2RGB)
         # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         # img = cv2.resize(img, (parameters.num_res, parameters.num_res))
+        img_path = img
         img = tf.io.read_file(img) 
-        img = tf.io.decode_image(img, dtype=tf.float64)
+        try:
+            img = tf.io.decode_image(img, dtype=tf.float64)
+        except:
+            print(f'{img_path} is crushed')
+            continue
+            
         img = tf.image.resize(img, [parameters.num_res, parameters.num_res])
         
         yield (img, lbl)    
