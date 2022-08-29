@@ -87,7 +87,7 @@ if __name__ == '__main__':
                     valid_dataset = valid_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
                     
                     model = models.create_model(args.model_name, 
-                                                optimizer='sgd', 
+                                                optimizer='adam', 
                                                 num_classes=parameters.num_classes, 
                                                 trainable=True, 
                                                 num_trainable=-2,
