@@ -10,13 +10,13 @@ import main
 import parameters
 
 def create_initial_bias(labels):
-    non, inf = np.bincount(labels)
+    non, inf = np.bincount(labels[:, 0])
     
     return np.log([inf / non])
     
 
 def create_class_weight(labels):
-    non, inf = np.bincount(labels)
+    non, inf = np.bincount(labels[:, 0])
     
     total = non + inf 
     
