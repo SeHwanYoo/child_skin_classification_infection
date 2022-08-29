@@ -38,7 +38,7 @@ from silence_tensorflow import silence_tensorflow
 silence_tensorflow()
 
 AUTOTUNE = tf.data.AUTOTUNE
-
+from keras import backend as K
             
 if __name__ == '__main__':
             
@@ -60,6 +60,14 @@ if __name__ == '__main__':
     train_images, train_labels = dataset_generator.create_train_list(part=args.part) 
     
     print(f'{len(train_images)} images were founded')
+    
+    initial_bias = dataset_generator.create_initial_bias(train_labels)
+    
+    print(f'initial_bias : {initial_bias}')
+    
+    class_weights = dataset_generator.create_class_weight(train_labels)
+    
+    print(f'class weight : {class_weights} weights applied!')
                 
     for skf_num in [5, 10]:
             skf = StratifiedKFold(n_splits=skf_num)
@@ -84,7 +92,8 @@ if __name__ == '__main__':
                                                 trainable=True, 
                                                 num_trainable=-2,
                                                 batch_size=parameters.num_batch,
-                                                train_length=len(train_images[train_idx]))
+                                                train_length=len(train_images[train_idx]),
+                                                initial_bias=initial_bias)
 
                     
 
@@ -113,6 +122,7 @@ if __name__ == '__main__':
                                     validation_data=valid_dataset,
                                     epochs = args.epochs,
                                     # verbose = 1,
+                                    class_weights=class_weights, 
                                     callbacks=[checkpoints1, checkpoints2])  
 
 

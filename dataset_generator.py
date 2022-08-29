@@ -9,6 +9,25 @@ import numpy as np
 import main
 import parameters
 
+def create_initial_bias(labels):
+    non, inf = np.bincount(labels)
+    
+    return np.log([inf / non])
+    
+
+def create_class_weight(labels):
+    non, inf = np.bincount(labels)
+    
+    total = non + inf 
+    
+    weight_for_0 = (1 / non) * (total / 2.0)
+    weight_for_1 = (1 / inf) * (total / 2.0)
+    
+    class_weight = {0: weight_for_0, 1: weight_for_1}
+    
+    return class_weight
+    
+
 def aug1(img, lbl):
     # shape augmentation
     img = tf.image.random_crop(img, [parameters.num_res, parameters.num_res, 3])
@@ -54,18 +73,21 @@ def aug(img, label):
            
     return img, label
 
-def create_train_list(part='head'):
+def create_train_list(dataset_path=None, part='head'):
     train_images = [] 
     # test_images = []
+    
+    if dataset_path is None:
+        dataset_path = parameters.dataset_path
 
     for i in range(7):
         # for key in train_dict.keys():
         
-        img = glob(parameters.dataset_path + f'/H{str(i)}/*/{part}/*.jpg')
+        img = glob(dataset_path + f'/H{str(i)}/*/{part}/*.jpg')
         train_images.extend(img) 
 
     # add JeonNam unv
-    img = glob(parameters.dataset_path + f'/H9/*/{part}/*.jpg')
+    img = glob(dataset_path + f'/H9/*/{part}/*.jpg')
     train_images.extend(img) 
             
     random.shuffle(train_images)
@@ -74,13 +96,10 @@ def create_train_list(part='head'):
     for img in train_images: 
         lbl = img.split('/')[-3]
         
-        # if lbl in parameters.name_dict:
-        #     lbl = parameters.name_dict[lbl][0]
-        
         if lbl.lower().replace(' ', '') in parameters.name_dict1:
             lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
             
-        print(f'-------------------------------> {lbl}')
+        # print(f'-------------------------------> {lbl}')
         
         # lbl
         if lbl in parameters.infection_list:
@@ -99,23 +118,28 @@ def create_train_list(part='head'):
     return train_images, train_labels
 
 
-def create_test_list(part='head'):
+def create_test_list(dataset_path=None, part='head'):
+    
+    if dataset_path is None:
+        dataset_path = parameters.dataset_path
+
     test_images = []
 
     for i in [7, 8]:
         # for key in train_dict.keys():
-        img = glob(parameters.dataset_path + f'/H{str(i)}/*/{part}/*.jpg')
+        img = glob(dataset_path + f'/H{str(i)}/*/{part}/*.jpg')
         test_images.extend(img) 
 
     # add JeonNam unv
-    img = glob(parameters.dataset_path + f'/H9/*/{part}/*.jpg')
+    img = glob(dataset_path + f'/H9/*/{part}/*.jpg')
     test_images.extend(img) 
             
     random.shuffle(test_images)
 
     test_labels = [] 
     for img in test_images: 
-        lbl = img.split('/')[-3]
+        # lbl = img.split('/')[-3]
+        lbl = img.split('\\')[-3]
         
         if lbl.lower().replace(' ', '') in parameters.name_dict1:
             lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
@@ -128,6 +152,8 @@ def create_test_list(part='head'):
 
         test_labels.append(lbl) 
 
+
+    print(f'Non-infection found : {test_labels.count(0)}, Infection found : {test_labels.count(1)}')
 
     test_images = np.reshape(test_images, [-1, 1])
     test_labels = np.reshape(test_labels, [-1, 1])
