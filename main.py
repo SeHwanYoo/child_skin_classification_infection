@@ -122,7 +122,7 @@ if __name__ == '__main__':
                                     validation_data=valid_dataset,
                                     epochs = args.epochs,
                                     # verbose = 1,
-                                    class_weights=class_weights, 
+                                    class_weight=class_weights, 
                                     callbacks=[checkpoints1, checkpoints2])  
 
 
