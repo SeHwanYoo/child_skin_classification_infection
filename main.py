@@ -93,7 +93,7 @@ if __name__ == '__main__':
                                                 num_trainable=-2,
                                                 batch_size=parameters.num_batch,
                                                 train_length=len(train_images[train_idx]),
-                                                initial_bias=initial_bias)
+                                                output_bias=initial_bias)
 
                     
 
