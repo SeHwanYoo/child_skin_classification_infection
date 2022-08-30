@@ -123,6 +123,7 @@ if __name__ == '__main__':
                                     epochs = args.epochs,
                                     # verbose = 1,
                                     class_weight=class_weights, 
+                                    shuffle=True, 
                                     callbacks=[checkpoints1, checkpoints2])  
 
 
