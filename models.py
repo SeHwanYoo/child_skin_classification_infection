@@ -51,8 +51,8 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
     #     layers.RandomContrast(factor=0.1),
     # ])
     
-    if output_bias is not None:
-        output_bias = tf.keras.initializers.Constant(output_bias)
+    # if output_bias is not None:
+    #     output_bias = tf.keras.initializers.Constant(output_bias)
     
     if model_name == 'efficient':
         base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(parms.num_res, parms.num_res, 3),  weights = 'imagenet')
@@ -68,7 +68,8 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
         x = base_model(inputs)
         x = keras.layers.GlobalAveragePooling2D()(x) 
         x = Dropout(0.3)(x)
-        x = keras.layers.Dense(1, activation='sigmoid', bias_initializer=output_bias)(x)
+        # x = keras.layers.Dense(1, activation='sigmoid', bias_initializer=output_bias)(x)
+        x = keras.layers.Dense(1, activation='sigmoid')(x)
         model = tf.keras.Model(inputs=inputs, outputs=x)
         
     elif model_name == 'resnet':
