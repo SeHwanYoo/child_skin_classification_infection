@@ -12,7 +12,14 @@ import parameters
 from imblearn.over_sampling import *
 
 def random_oversampling(imgs, lbls): 
+    
+    print(f'imgs--------------------->{imgs.shape}')
+    
     x_samp, y_samp = RandomOverSampler(imgs, lbls)
+    
+    
+    print(f'x_samp--------------------->{x_samp.shape}')
+    
     return x_samp, y_samp
 
 def create_initial_bias(labels):
