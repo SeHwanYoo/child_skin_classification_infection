@@ -176,10 +176,19 @@ def create_imbalanced_dataset(images, labels, d_type='train'):
     lbls = [] 
     
     for img, lbl in zip(images, labels): 
+        
+        try:
+            img = tf.io.read_file(img) 
+            img = tf.io.decode_image(img, dtype=tf.float64)
+        except:
+            continue
+            
+        img = tf.image.resize(img, [parameters.num_res, parameters.num_res])
+        
         imgs.append(img)
         lbls.append(lbl)
         
-    imgs = np.reshape(imgs, [-1, parameters.num_res, parameters.num_res])
+    imgs = np.reshape(imgs, [-1, parameters.num_res, parameters.num_res, 3])
     lbls = np.reshape(lbls, [-1, 1])
     
     if d_type == 'test':
