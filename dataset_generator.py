@@ -10,17 +10,18 @@ import main
 import parameters
 
 from imblearn.over_sampling import *
+from imblearn.keras import BalancedBatchGenerator
 
-def random_oversampling(imgs, lbls): 
+# def random_oversampling(imgs, lbls): 
     
-    print(f'imgs--------------------->{imgs.shape}')
+#     print(f'imgs--------------------->{imgs.shape}')
     
-    x_samp, y_samp = RandomOverSampler(imgs, lbls)
+#     x_samp, y_samp = RandomOverSampler(imgs, lbls)
     
     
-    print(f'x_samp--------------------->{x_samp.shape}')
+#     print(f'x_samp--------------------->{x_samp.shape}')
     
-    return x_samp, y_samp
+    # return x_samp, y_samp
 
 def create_initial_bias(labels):
     non, inf = np.bincount(labels[:, 0])
@@ -169,6 +170,23 @@ def create_test_list(dataset_path=None, part='head'):
     test_labels = np.reshape(test_labels, [-1, 1])
     
     return test_images, test_labels
+
+def create_imbalanced_dataset(images, labels, d_type='train'):
+    imgs = [] 
+    lbls = [] 
+    
+    for img, lbl in zip(images, labels): 
+        imgs.append(img)
+        lbls.append(lbl)
+        
+    imgs = np.reshape(imgs, [-1, parameters.num_res, parameters.num_res, 3])
+    lbls = np.reshape(lbls, [-1, 1])
+    
+    if d_type == 'test':
+        return tf.data.Dataset.from_tensor_slices((imgs, lbls)).batch(parameters.batch_size, drop_remainder=True)
+    else:
+        return BalancedBatchGenerator(imgs, lbls, sampler=SMOTE(), batch_size=parameters.batch_size, random_state=42)
+        
 
 
 def create_dataset(images, labels, d_type='train'):
