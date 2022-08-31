@@ -66,7 +66,7 @@ if __name__ == '__main__':
     # print(f'initial_bias : {initial_bias}')
     
     class_weights = dataset_generator.create_class_weight(train_labels)
-    
+    class_weights = {0 : 0.1, 1 : 0.9}
     print(f'class weight : {class_weights} weights applied!')
                 
     for skf_num in [5, 10]:
@@ -80,13 +80,13 @@ if __name__ == '__main__':
                 
                 with mirrored_strategy.scope():
                     
-                    # train_dataset = dataset_generator.create_dataset(train_images[train_idx], train_labels[train_idx]) 
-                    # valid_dataset = dataset_generator.create_dataset(train_images[valid_idx], train_labels[valid_idx]) 
+                    train_dataset = dataset_generator.create_dataset(train_images[train_idx], train_labels[train_idx]) 
+                    valid_dataset = dataset_generator.create_dataset(train_images[valid_idx], train_labels[valid_idx]) 
                     
-                    # train_dataset = train_dataset.flat_map(dataset_generator.random_oversampling).map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
-                    # valid_dataset = valid_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
-                    train_dataset = dataset_generator.create_imbalanced_dataset(train_images[train_idx], train_labels[train_idx]).map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
-                    valid_dataset = dataset_generator.create_imbalanced_dataset(train_images[valid_idx], train_labels[valid_idx]).map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
+                    train_dataset = train_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
+                    valid_dataset = valid_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
+                    # train_dataset = dataset_generator.create_imbalanced_dataset(train_images[train_idx], train_labels[train_idx]).map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
+                    # valid_dataset = dataset_generator.create_imbalanced_dataset(train_images[valid_idx], train_labels[valid_idx]).map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
 
 
                     model = models.create_model(args.model_name, 
