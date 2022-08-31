@@ -85,8 +85,8 @@ if __name__ == '__main__':
                     
                     # train_dataset = train_dataset.flat_map(dataset_generator.random_oversampling).map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
                     # valid_dataset = valid_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
-                    train_dataset = dataset_generator.create_imbalanced_dataset(train_images[train_idx], train_labels[train_idx]).unbatch().map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
-                    valid_dataset = dataset_generator.create_imbalanced_dataset(train_images[valid_idx], train_labels[valid_idx]).unbatch().map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
+                    train_dataset = dataset_generator.create_imbalanced_dataset(train_images[train_idx], train_labels[train_idx]).map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
+                    valid_dataset = dataset_generator.create_imbalanced_dataset(train_images[valid_idx], train_labels[valid_idx]).map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
 
 
                     model = models.create_model(args.model_name, 
