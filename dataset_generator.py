@@ -190,7 +190,7 @@ def create_imbalanced_dataset(images, labels, d_type='train'):
         imgs.append(img)
         lbls.append(lbl)
         
-    imgs = np.reshape(imgs, [-1, parameters.num_res, parameters.num_res, 3])
+    imgs = np.reshape(imgs, [-1, parameters.num_res, parameters.num_res])
     lbls = np.reshape(lbls, [-1, 1])
     
     if d_type == 'test':
