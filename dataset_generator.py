@@ -174,6 +174,7 @@ def create_test_list(dataset_path=None, part='head'):
 def create_imbalanced_dataset(images, labels, d_type='train'):
     imgs = [] 
     lbls = [] 
+    print(f'images--------------------->{images}')
     
     print(f'images len--------------------->{len(images)}')
     
