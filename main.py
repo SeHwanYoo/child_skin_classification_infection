@@ -61,9 +61,9 @@ if __name__ == '__main__':
     
     print(f'{len(train_images)} images were founded')
     
-    initial_bias = dataset_generator.create_initial_bias(train_labels)
+    # initial_bias = dataset_generator.create_initial_bias(train_labels)
     
-    print(f'initial_bias : {initial_bias}')
+    # print(f'initial_bias : {initial_bias}')
     
     class_weights = dataset_generator.create_class_weight(train_labels)
     
@@ -93,7 +93,8 @@ if __name__ == '__main__':
                                                 num_trainable=-2,
                                                 batch_size=parameters.num_batch,
                                                 train_length=len(train_images[train_idx]),
-                                                output_bias=initial_bias)
+                                                # output_bias=initial_bias
+                                                )
 
                     
 
