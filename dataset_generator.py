@@ -199,7 +199,9 @@ def create_imbalanced_dataset(images, labels, d_type='train'):
         return tf.data.Dataset.from_tensor_slices((imgs, lbls)).batch(parameters.num_batch, drop_remainder=True)
     else:
         print(f'imgs--------------------->{imgs.shape}')
-        x_samp, y_samp = RandomOverSampler(imgs, lbls)
+        sm = SMOTE(random_state=42)
+        # x_samp, y_samp = RandomOverSampler(imgs, lbls)
+        x_samp, y_samp = sm.fit_resample(imgs, lbls)
         print(f'x_samp--------------------->{x_samp.shape}')
         # return BalancedBatchGenerator(imgs, lbls, sampler=SMOTE(), batch_size=parameters.num_batch, random_state=42)
         return tf.data.Dataset.from_tensor_slices((x_samp, y_samp)).batch(parameters.num_batch, drop_remainder=True)
