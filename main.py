@@ -50,6 +50,7 @@ if __name__ == '__main__':
     # parser.add_argument('--max_num', required=False, default=max_num)
     parser.add_argument('--part', required=False, default='head')
     parser.add_argument('--epochs', required=False, default=500)
+    parser.add_argument('--optim', required=False, default='adam')
     
     args = parser.parse_args()
     
@@ -90,7 +91,7 @@ if __name__ == '__main__':
 
 
                     model = models.create_model(args.model_name, 
-                                                optimizer='adam', 
+                                                optimizer=args.optim,
                                                 num_classes=parameters.num_classes, 
                                                 trainable=True, 
                                                 num_trainable=-2,

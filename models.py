@@ -134,6 +134,18 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
     steps_per_epoch = (train_length / batch_size)
     # lr_schedule = CustomSchedule(LR, 3*steps_per_epoch, epochs * steps_per_epoch)
     lr_schedule = keras.optimizers.schedules.ExponentialDecay(LR, steps_per_epoch*30, 0.1, True)
+    
+    METRICS = [
+      keras.metrics.TruePositives(name='tp'),
+      keras.metrics.FalsePositives(name='fp'),
+      keras.metrics.TrueNegatives(name='tn'),
+      keras.metrics.FalseNegatives(name='fn'), 
+      keras.metrics.BinaryAccuracy(name='accuracy'),
+      keras.metrics.Precision(name='precision'),
+      keras.metrics.Recall(name='recall'),
+      keras.metrics.AUC(name='auc'),
+      keras.metrics.AUC(name='prc', curve='PR'), # precision-recall curve
+    ]
 
     if optimizer == 'adam':
         optimizer = tf.keras.optimizers.Adam(lr_schedule)
@@ -142,6 +154,6 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
         
     model.compile(loss='binary_crossentropy', 
                   optimizer=optimizer,
-                  metrics=['accuracy'])
+                  metrics=[METRICS, 'accuracy'])
 
     return model
