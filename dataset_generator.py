@@ -192,9 +192,9 @@ def create_imbalanced_dataset(images, labels, d_type='train'):
     lbls = np.reshape(lbls, [-1, 1])
     
     if d_type == 'test':
-        return tf.data.Dataset.from_tensor_slices((imgs, lbls)).batch(parameters.batch_size, drop_remainder=True)
+        return tf.data.Dataset.from_tensor_slices((imgs, lbls)).batch(parameters.num_batch, drop_remainder=True)
     else:
-        return BalancedBatchGenerator(imgs, lbls, sampler=SMOTE(), batch_size=parameters.batch_size, random_state=42)
+        return BalancedBatchGenerator(imgs, lbls, sampler=SMOTE(), batch_size=parameters.num_batch, random_state=42)
         
 
 
