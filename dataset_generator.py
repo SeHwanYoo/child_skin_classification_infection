@@ -175,6 +175,8 @@ def create_imbalanced_dataset(images, labels, d_type='train'):
     imgs = [] 
     lbls = [] 
     
+    print(f'images len--------------------->{len(images)}')
+    
     for img, lbl in zip(images, labels): 
         
         try:
