@@ -9,6 +9,12 @@ import numpy as np
 import main
 import parameters
 
+from imblearn.over_sampling import *
+
+def random_oversampling(imgs, lbls): 
+    x_samp, y_samp = RandomOverSampler(imgs, lbls)
+    return x_samp, y_samp
+
 def create_initial_bias(labels):
     non, inf = np.bincount(labels[:, 0])
     
@@ -98,10 +104,7 @@ def create_train_list(dataset_path=None, part='head'):
         
         if lbl.lower().replace(' ', '') in parameters.name_dict1:
             lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
-            
-        # print(f'-------------------------------> {lbl}')
         
-        # lbl
         if lbl in parameters.infection_list:
             lbl = 1 
         else:
@@ -184,8 +187,9 @@ def train_skin_data(images, labels):
     
         img = img[0].decode('utf-8')
         img_path = img
-        img = tf.io.read_file(img) 
+        
         try:
+            img = tf.io.read_file(img) 
             img = tf.io.decode_image(img, dtype=tf.float64)
         except:
             print(f'{img_path} is crushed')
@@ -200,12 +204,10 @@ def test_skin_data(images, labels,):
     for img, lbl in zip(images, labels):
     
         img = img[0].decode('utf-8')
-        # img = cv2.imread(img, cv2.COLOR_BGR2RGB)
-        # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        # img = cv2.resize(img, (parameters.num_res, parameters.num_res))
         img_path = img
-        img = tf.io.read_file(img) 
+        
         try:
+            img = tf.io.read_file(img) 
             img = tf.io.decode_image(img, dtype=tf.float64)
         except:
             print(f'{img_path} is crushed')
