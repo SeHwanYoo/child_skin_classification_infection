@@ -181,7 +181,7 @@ def create_imbalanced_dataset(images, labels, d_type='train'):
     for img, lbl in zip(images, labels): 
         
         try:
-            img = tf.io.read_file(img) 
+            img = tf.io.read_file(img[0]) 
             img = tf.io.decode_image(img, dtype=tf.float64)
         except Exception as e:
             print(e)
