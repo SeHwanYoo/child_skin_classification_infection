@@ -183,7 +183,8 @@ def create_imbalanced_dataset(images, labels, d_type='train'):
         try:
             img = tf.io.read_file(img) 
             img = tf.io.decode_image(img, dtype=tf.float64)
-        except:
+        except Exception as e:
+            print(e)
             continue
             
         img = tf.image.resize(img, [parameters.num_res, parameters.num_res])
