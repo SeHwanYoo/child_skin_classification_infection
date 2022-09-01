@@ -138,7 +138,7 @@ class_list = [
 "Fordyce's spot",
 "Freckle",
 "Furuncle",
-"Gianotti-Crosti syndrome",
+"Gianotti-Crosti Syndrome",
 "Graft Versus Host Disease",
 "Granuloma annulare",
 "Green nail syndrome",
