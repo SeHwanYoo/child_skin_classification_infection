@@ -82,6 +82,9 @@ if __name__ == '__main__':
                 
                 with mirrored_strategy.scope():
                     
+                    print(f'train_idx ----------------------------> {len(train_idx)}')
+                    print(f'train_idx ----------------------------> {len(valid_idx)}')
+                    
                     train_dataset = dataset_generator.create_dataset(train_images[train_idx], train_labels[train_idx]) 
                     valid_dataset = dataset_generator.create_dataset(train_images[valid_idx], train_labels[valid_idx]) 
                     

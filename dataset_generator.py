@@ -240,6 +240,8 @@ def train_skin_data(images, labels):
         img = img[0].decode('utf-8')
         img_path = img
         
+        print(f'---------------------------------->{img_path} is trained')
+        
         try:
             img = tf.io.read_file(img) 
             img = tf.io.decode_image(img, dtype=tf.float64)
