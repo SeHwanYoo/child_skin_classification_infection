@@ -80,7 +80,7 @@ if __name__ == '__main__':
                 # mirrored_strategy = tf.distribute.MirroredStrategy(devices=gpus, cross_device_ops=tf.distribute.HierarchicalCopyAllReduce())
                 # mirrored_strategy = tf.distribute.MirroredStrategy(devices=gpus)
                 # with mirrored_strategy.scope():
-                with tf.device(f'/device:CPU:{args.gpu}'):
+                with tf.device(f'/device:CPU:{args.gpus}'):
                     train_dataset = dataset_generator.create_dataset(train_images[train_idx], train_labels[train_idx]) 
                     valid_dataset = dataset_generator.create_dataset(train_images[valid_idx], train_labels[valid_idx]) 
                     
