@@ -113,8 +113,8 @@ def create_train_list(dataset_path=None, part='head'):
         if lbl.lower().replace(' ', '') in parameters.name_dict1:
             lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
             
-        if lbl in parameters.exception_list:
-            continue
+        # if lbl in parameters.exception_list:
+        #     continue
         
         if lbl in parameters.infection_list:
             lbl = 1 
@@ -158,8 +158,8 @@ def create_test_list(dataset_path=None, part='head'):
         if lbl.lower().replace(' ', '') in parameters.name_dict1:
             lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
             
-        if lbl in parameters.exception_list:
-            continue
+        # if lbl in parameters.exception_list:
+        #     continue
         
         # lbl
         if lbl in parameters.infection_list:
