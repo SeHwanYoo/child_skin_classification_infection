@@ -54,9 +54,9 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     
-    gpus = []
-    for gpu in range(int(args.gpus)):
-        gpus.append(f'/GPU:{gpu}')
+    # gpus = []
+    # for gpu in range(int(args.gpus)):
+    #     gpus.append(f'/GPU:{gpu}')
     
     train_images, train_labels = dataset_generator.create_train_list(part=args.part) 
     
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     # print(f'initial_bias : {initial_bias}')
     
     class_weights = dataset_generator.create_class_weight(train_labels)
-    class_weights = {0 : 0.1, 1 : 0.9}
+    # class_weights = {0 : 0.1, 1 : 0.9}
     print(f'class weight : {class_weights} weights applied!')
                 
     for skf_num in [5, 10]:
@@ -78,13 +78,9 @@ if __name__ == '__main__':
                 
                 
                 # mirrored_strategy = tf.distribute.MirroredStrategy(devices=gpus, cross_device_ops=tf.distribute.HierarchicalCopyAllReduce())
-                mirrored_strategy = tf.distribute.MirroredStrategy(devices=gpus)
-                
-                with mirrored_strategy.scope():
-                    
-                    print(f'train_idx ----------------------------> {len(train_idx)}')
-                    print(f'train_idx ----------------------------> {len(valid_idx)}')
-                    
+                # mirrored_strategy = tf.distribute.MirroredStrategy(devices=gpus)
+                # with mirrored_strategy.scope():
+                with tf.device(f'/device:CPU:{args.gpu}'):
                     train_dataset = dataset_generator.create_dataset(train_images[train_idx], train_labels[train_idx]) 
                     valid_dataset = dataset_generator.create_dataset(train_images[valid_idx], train_labels[valid_idx]) 
                     
