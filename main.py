@@ -86,6 +86,10 @@ if __name__ == '__main__':
                     train_dataset = dataset_generator.create_dataset(train_images[train_idx], train_labels[train_idx]) 
                     valid_dataset = dataset_generator.create_dataset(train_images[valid_idx], train_labels[valid_idx]) 
                     
+                    class_weights = class_weight.compute_class_weight('balanced',
+                                                                      np.unique(train_dataset.classes), 
+                                                                      train_dataset.classes)
+                    
                     train_dataset = train_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
                     valid_dataset = valid_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
                     # train_dataset = dataset_generator.create_imbalanced_dataset(train_images[train_idx], train_labels[train_idx]).map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
@@ -126,10 +130,7 @@ if __name__ == '__main__':
                                                                        mode='min', 
                                                                        freq='epoch')]
                     
-                    class_weights = class_weight.compute_class_weight('balanced',
-                                                                      np.unique(train_dataset.classes), 
-                                                                      train_dataset.classes)
-                    
+
                     hist = model.fit(train_dataset, 
                                     validation_data=valid_dataset,
                                     epochs = args.epochs,
