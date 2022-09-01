@@ -278,4 +278,8 @@ class_list = [
 "Xerotic eczema",
 ]
 
+
+exception_list = [
+    'Normal'
+]
 # class_list = list((map(lambda x : x.lower().replace(' ', ''), class_list)))

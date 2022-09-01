@@ -44,7 +44,7 @@ def create_class_weight(labels):
 
 def aug1(img, lbl):
     # shape augmentation
-    img = tf.image.random_crop(img, [parameters.num_res, parameters.num_res, 3])
+    # img = tf.image.random_crop(img, [parameters.num_res, parameters.num_res, 3])
     img = tf.image.random_flip_left_right(img)
     img = tf.image.flip_up_down(img)
     
@@ -112,6 +112,9 @@ def create_train_list(dataset_path=None, part='head'):
         
         if lbl.lower().replace(' ', '') in parameters.name_dict1:
             lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
+            
+        if lbl in parameters.exception_list:
+            continue
         
         if lbl in parameters.infection_list:
             lbl = 1 
@@ -154,6 +157,9 @@ def create_test_list(dataset_path=None, part='head'):
         
         if lbl.lower().replace(' ', '') in parameters.name_dict1:
             lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
+            
+        if lbl in parameters.exception_list:
+            continue
         
         # lbl
         if lbl in parameters.infection_list:
@@ -171,42 +177,42 @@ def create_test_list(dataset_path=None, part='head'):
     
     return test_images, test_labels
 
-def create_imbalanced_dataset(images, labels, d_type='train'):
-    imgs = [] 
-    lbls = [] 
-    print(f'images--------------------->{images}')
+# def create_imbalanced_dataset(images, labels, d_type='train'):
+#     imgs = [] 
+#     lbls = [] 
+#     print(f'images--------------------->{images}')
     
-    print(f'images len--------------------->{len(images)}')
+#     print(f'images len--------------------->{len(images)}')
     
-    for img, lbl in zip(images, labels): 
+#     for img, lbl in zip(images, labels): 
         
-        try:
-            img = tf.io.read_file(img[0]) 
-            img = tf.io.decode_image(img, dtype=tf.float64)
-        except Exception as e:
-            print(e)
-            continue
+#         try:
+#             img = tf.io.read_file(img[0]) 
+#             img = tf.io.decode_image(img, dtype=tf.float64)
+#         except Exception as e:
+#             print(e)
+#             continue
             
-        img = tf.image.resize(img, [parameters.num_res, parameters.num_res])
+#         img = tf.image.resize(img, [parameters.num_res, parameters.num_res])
         
-        imgs.append(img)
-        lbls.append(lbl)
+#         imgs.append(img)
+#         lbls.append(lbl)
         
-    imgs = np.reshape(imgs, [-1, parameters.num_res * parameters.num_res * 3])
-    lbls = np.reshape(lbls, [-1, 1])
+#     imgs = np.reshape(imgs, [-1, parameters.num_res * parameters.num_res * 3])
+#     lbls = np.reshape(lbls, [-1, 1])
     
-    if d_type == 'test':
-        return tf.data.Dataset.from_tensor_slices((imgs, lbls)).batch(parameters.num_batch, drop_remainder=True)
-    else:
-        print(f'imgs--------------------->{imgs.shape}')
-        sm = SMOTE(random_state=42)
-        # x_samp, y_samp = RandomOverSampler(imgs, lbls)
-        x_samp, y_samp = sm.fit_resample(imgs, lbls)
-        print(f'x_samp--------------------->{x_samp.shape}')
+#     if d_type == 'test':
+#         return tf.data.Dataset.from_tensor_slices((imgs, lbls)).batch(parameters.num_batch, drop_remainder=True)
+#     else:
+#         print(f'imgs--------------------->{imgs.shape}')
+#         sm = SMOTE(random_state=42)
+#         # x_samp, y_samp = RandomOverSampler(imgs, lbls)
+#         x_samp, y_samp = sm.fit_resample(imgs, lbls)
+#         print(f'x_samp--------------------->{x_samp.shape}')
         
-        x_samp = np.reshape(x_samp, [-1, parameters.num_res, parameters.num_res, 3])
-        # return BalancedBatchGenerator(imgs, lbls, sampler=SMOTE(), batch_size=parameters.num_batch, random_state=42)
-        return tf.data.Dataset.from_tensor_slices((x_samp, y_samp))
+#         x_samp = np.reshape(x_samp, [-1, parameters.num_res, parameters.num_res, 3])
+#         # return BalancedBatchGenerator(imgs, lbls, sampler=SMOTE(), batch_size=parameters.num_batch, random_state=42)
+#         return tf.data.Dataset.from_tensor_slices((x_samp, y_samp))
         
 
 

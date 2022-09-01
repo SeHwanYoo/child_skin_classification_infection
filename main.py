@@ -104,10 +104,11 @@ if __name__ == '__main__':
 
                     # model, hist = run_expriment('efficient', train_dataset, valid_dataset, class_weights=None, optimizer='sgd', trainable=False, batch_size=N_BATCH, mc=False, epochs=50)
                     
-                    filepath = os.path.join(f'../../models/child_classification_infection/check_point_efficient_{time.strftime("%Y%m%d-%H%M%S")}.h5')
+                    min_filepath = os.path.join(f'../../models/child_classification_infection/min_check_point_efficient_{time.strftime("%Y%m%d-%H%M%S")}.h5')
+                    max_filepath = os.path.join(f'../../models/child_classification_infection/max_check_point_efficient_{time.strftime("%Y%m%d-%H%M%S")}.h5')
                     
 
-                    checkpoints1 = [tf.keras.callbacks.ModelCheckpoint(filepath, 
+                    checkpoints1 = [tf.keras.callbacks.ModelCheckpoint(max_filepath, 
                                                                        monitor='val_accuracy', 
                                                                        verbose=0, 
                                                                        save_best_only=True,
@@ -115,7 +116,7 @@ if __name__ == '__main__':
                                                                        mode='max', 
                                                                        freq='epoch')]
                     
-                    checkpoints2 = [tf.keras.callbacks.ModelCheckpoint(filepath, 
+                    checkpoints2 = [tf.keras.callbacks.ModelCheckpoint(min_filepath, 
                                                                        monitor='val_loss', 
                                                                        verbose=0, 
                                                                        save_best_only=True,
