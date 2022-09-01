@@ -96,7 +96,6 @@ def create_train_list(dataset_path=None, part='head'):
 
     for i in range(7):
         # for key in train_dict.keys():
-        
         img = glob(dataset_path + f'/H{str(i)}/*/{part}/*.jpg')
         train_images.extend(img) 
 
@@ -251,6 +250,7 @@ def get_label(img):
         lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
             
     if lbl not in parameters.class_list:
+        print(lbl)
         raise TypeError(f'Not Found {lbl}')
 
     return lbl
