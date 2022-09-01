@@ -63,7 +63,7 @@ if __name__ == '__main__':
     
     rand_idx_list = [] 
     
-    for _ in math.ceil(len_non_inf_list / len_inf_list):
+    for _ in range(math.ceil(len_non_inf_list / len_inf_list)):
         num_len_inf = 0
         non_inf_list = [] 
         while (num_len_inf < len_inf_list) or (len(rand_idx_list) < len_non_inf_list): 
