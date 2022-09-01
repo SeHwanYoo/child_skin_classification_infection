@@ -108,13 +108,7 @@ def create_train_list(dataset_path=None, part='head'):
 
     train_labels = [] 
     for img in train_images: 
-        lbl = img.split('/')[-3]
-        
-        if lbl.lower().replace(' ', '') in parameters.name_dict1:
-            lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
-            
-        # if lbl in parameters.exception_list:
-        #     continue
+        lbl = get_label(img) 
         
         if lbl in parameters.infection_list:
             lbl = 1 
@@ -152,15 +146,8 @@ def create_test_list(dataset_path=None, part='head'):
 
     test_labels = [] 
     for img in test_images: 
-        # lbl = img.split('/')[-3]
-        lbl = img.split('\\')[-3]
-        
-        if lbl.lower().replace(' ', '') in parameters.name_dict1:
-            lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
-            
-        # if lbl in parameters.exception_list:
-        #     continue
-        
+        lbl = get_label(img) 
+
         # lbl
         if lbl in parameters.infection_list:
             lbl = 1 
@@ -176,6 +163,96 @@ def create_test_list(dataset_path=None, part='head'):
     test_labels = np.reshape(test_labels, [-1, 1])
     
     return test_images, test_labels
+
+def create_train_list_by_folders(folders, dataset_path=None, part='head'):
+    train_images = [] 
+    # test_images = []
+    
+    if dataset_path is None:
+        dataset_path = parameters.dataset_path
+
+    for i in range(7):
+        # for key in train_dict.keys():
+        for folder in folders:
+            img = glob(dataset_path + f'/H{str(i)}/{folder}/{part}/*.jpg')
+            train_images.extend(img) 
+
+    # add JeonNam unv
+    for folder in folder:
+        img = glob(dataset_path + f'/H9/{folder}/{part}/*.jpg')
+        train_images.extend(img) 
+            
+    random.shuffle(train_images)
+
+    train_labels = [] 
+    for img in train_images: 
+        lbl = get_label(img) 
+        
+        if lbl in parameters.infection_list:
+            lbl = 1 
+        else:
+            lbl = 0 
+
+        train_labels.append(lbl) 
+        
+    
+    print(f'Non-infection found : {train_labels.count(0)}, Infection found : {train_labels.count(1)}')
+
+    train_images = np.reshape(train_images, [-1, 1])
+    train_labels = np.reshape(train_labels, [-1, 1])
+    
+    return train_images, train_labels
+
+
+def create_test_list_by_folder(folders, dataset_path=None, part='head'):
+    
+    if dataset_path is None:
+        dataset_path = parameters.dataset_path
+
+    test_images = []
+
+    for i in [7, 8]:
+        # for key in train_dict.keys():
+        for folder in folders:
+            img = glob(dataset_path + f'/H{str(i)}/{folder}/{part}/*.jpg')
+            test_images.extend(img) 
+
+    # add JeonNam unv
+    img = glob(dataset_path + f'/H9/*/{part}/*.jpg')
+    test_images.extend(img) 
+            
+    random.shuffle(test_images)
+
+    test_labels = [] 
+    for img in test_images: 
+        lbl = get_label(img) 
+
+        # lbl
+        if lbl in parameters.infection_list:
+            lbl = 1 
+        else:
+            lbl = 0 
+
+        test_labels.append(lbl) 
+
+
+    print(f'Non-infection found : {test_labels.count(0)}, Infection found : {test_labels.count(1)}')
+
+    test_images = np.reshape(test_images, [-1, 1])
+    test_labels = np.reshape(test_labels, [-1, 1])
+    
+    return test_images, test_labels
+
+def get_label(img):            
+    lbl = img.split('\\')[-3]
+    
+    if lbl.lower().replace(' ', '') in parameters.name_dict1:
+        lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
+            
+    if lbl not in parameters.class_list:
+        raise TypeError(f'Not Found {lbl}')
+
+    return lbl
 
 # def create_imbalanced_dataset(images, labels, d_type='train'):
 #     imgs = [] 
