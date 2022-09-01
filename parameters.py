@@ -194,7 +194,7 @@ class_list = [
 "Nevus anemicus",
 "Nevus comedonicus",
 "Nevus depigmentosus",
-"nevus lipomatous superficialis",
+"Nevus lipomatous superficialis",
 "Nevus of Ota",
 "Nevus sebaceus",
 "Nevus spilus",
