@@ -19,7 +19,7 @@ name_dict1 = {
     'acquiredtuftedhemangioma' : 'Acquired tufted angioma', 
     'acquiredtuftedhamangioma' : 'Acquired tufted angioma', # add a and e
     'cyst' : 'Epidermal cyst', 
-    'cystintegrated' : 'Epidermalcyst', # add
+    'cystintegrated' : 'Epidermal cyst', # add
     'infantilehemangioma' : 'Hemangioma',
     'hemangiomaintegrated' : 'Hemangioma',
     'ilven': 'Inflammatory linear verrucous epidermal nevus'
