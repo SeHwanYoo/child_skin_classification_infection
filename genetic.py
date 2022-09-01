@@ -89,12 +89,17 @@ if __name__ == '__main__':
         
         non_inf_images, non_inf_labels = dataset_generator.create_train_list_by_folders(non_inf_list, part=args.part) 
         
-        train_images = np.concatenate([inf_images, non_inf_images], axis=0) 
-        train_labels = np.concatenate([inf_labels, non_inf_labels], axis=0) 
+        images = np.concatenate([inf_images, non_inf_images], axis=0) 
+        labels = np.concatenate([inf_labels, non_inf_labels], axis=0) 
 
-        train = list(zip(train_images, train_labels))
-        random.shuffle(train) # shuffle
-        train_images, train_labels = zip(*train)
+        mixed_list = list(zip(images, labels))
+        random.shuffle(mixed_list) # shuffle
+        images, labels = zip(*mixed_list)
+        
+        split_rate = int(len(images) * 0.3)
+        
+        valid_images, valid_labels = images[:split_rate], labels[:split_rate]
+        train_images, train_labels = images[split_rate:], labels[split_rate:]
         
         # print(f'{len(train_images)} images were founded')
         
@@ -102,7 +107,10 @@ if __name__ == '__main__':
         
         with mirrored_strategy.scope():
             train_dataset = dataset_generator.create_dataset(train_images, train_labels) 
+            valid_dataset = dataset_generator.create_dataset(valid_images, valid_labels) 
+            
             train_dataset = train_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
+            valid_dataset = valid_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
 
             model = models.create_model(args.model_name, 
                                         optimizer=args.optim,
@@ -114,8 +122,7 @@ if __name__ == '__main__':
                                         )
             
             hist = model.fit(train_dataset, 
-                            # validation_data=valid_dataset,
-                            # validation_split=0.3, 
+                            validation_data=valid_dataset,
                             epochs = args.epochs,
                             # verbose = 1,
                             # class_weight=class_weights, 

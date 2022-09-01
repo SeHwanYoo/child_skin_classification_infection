@@ -10,7 +10,7 @@ dataset_path = os.path.join(base_path, 'Total_Dataset')
 
 
 num_res = 256 
-num_batch = 128
+num_batch = 32
 num_classes = 2
 
 name_dict1 = {
