@@ -18,6 +18,8 @@ import datetime
 from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.metrics import mean_absolute_error
 # from sklearn.metrics import accuracy_score
+from sklearn.utils import class_weight 
+
 import random 
 import math
 
@@ -123,6 +125,10 @@ if __name__ == '__main__':
                                                                        save_weights_only=False, 
                                                                        mode='min', 
                                                                        freq='epoch')]
+                    
+                    class_weights = class_weight.compute_class_weight('balanced',
+                                                                      np.unique(train_dataset.classes), 
+                                                                      train_dataset.classes)
                     
                     hist = model.fit(train_dataset, 
                                     validation_data=valid_dataset,

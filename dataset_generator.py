@@ -245,6 +245,7 @@ def create_test_list_by_folder(folders, dataset_path=None, part='head'):
 def get_label(img):          
     # print(f'----------------------------------------------->{img}')  
     lbl = img.split('/')[-3]
+    # raise TypeError('STOP')
     
     if lbl.lower().replace(' ', '') in parameters.name_dict1:
         lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
@@ -317,17 +318,13 @@ def train_skin_data(images, labels):
     
         img = img[0].decode('utf-8')
         img_path = img
-        
-        # print()
-        # print(f'---------------------------------->{img_path} is trained')
-        # print()
-        
+
         try:
             img = tf.io.read_file(img) 
             img = tf.io.decode_image(img, dtype=tf.float64)
             img = tfa.image.equalize(img) 
         except:
-            print(f'{img_path} is crushed')
+            # print(f'{img_path} is crushed')
             continue
             
         img = tf.image.resize(img, [parameters.num_res, parameters.num_res])
@@ -345,7 +342,7 @@ def test_skin_data(images, labels,):
             img = tf.io.read_file(img) 
             img = tf.io.decode_image(img, dtype=tf.float64)
         except:
-            print(f'{img_path} is crushed')
+            # print(f'{img_path} is crushed')
             continue
             
         img = tf.image.resize(img, [parameters.num_res, parameters.num_res])
