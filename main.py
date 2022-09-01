@@ -77,7 +77,8 @@ if __name__ == '__main__':
             for train_idx, valid_idx in skf.split(train_images, train_labels):
                 
                 
-                mirrored_strategy = tf.distribute.MirroredStrategy(devices=gpus, cross_device_ops=tf.distribute.HierarchicalCopyAllReduce())
+                # mirrored_strategy = tf.distribute.MirroredStrategy(devices=gpus, cross_device_ops=tf.distribute.HierarchicalCopyAllReduce())
+                mirrored_strategy = tf.distribute.MirroredStrategy(devices=gpus)
                 
                 with mirrored_strategy.scope():
                     
