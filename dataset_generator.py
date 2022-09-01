@@ -243,7 +243,8 @@ def create_test_list_by_folder(folders, dataset_path=None, part='head'):
     
     return test_images, test_labels
 
-def get_label(img):            
+def get_label(img):          
+    print(lbl)  
     lbl = img.split('\\')[-3]
     
     if lbl.lower().replace(' ', '') in parameters.name_dict1:
