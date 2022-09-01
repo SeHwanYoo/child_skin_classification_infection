@@ -154,6 +154,6 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
         
     model.compile(loss='binary_crossentropy', 
                   optimizer=optimizer,
-                  metrics=[METRICS, 'accuracy'])
+                  metrics=[METRICS])
 
     return model
