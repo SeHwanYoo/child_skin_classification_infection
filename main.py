@@ -53,7 +53,7 @@ if __name__ == '__main__':
     parser.add_argument('--part', required=False, default='head')
     parser.add_argument('--epochs', required=False, type=int, default=500)
     parser.add_argument('--optim', required=False, default='adam')
-    parser.add_argument('--batch_size', required=False, type=int, default=parameters.batch_size)
+    parser.add_argument('--batch_size', required=False, type=int, default=parameters.num_batch)
     
     args = parser.parse_args()
     
@@ -87,8 +87,8 @@ if __name__ == '__main__':
                     train_dataset = dataset_generator.create_dataset(train_images[train_idx], train_labels[train_idx]) 
                     valid_dataset = dataset_generator.create_dataset(train_images[valid_idx], train_labels[valid_idx]) 
                     
-                    train_dataset = train_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
-                    valid_dataset = valid_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
+                    train_dataset = train_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(args.batch_size, drop_remainder=True).prefetch(AUTOTUNE)
+                    valid_dataset = valid_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(args.batch_size, drop_remainder=True).prefetch(AUTOTUNE)
                     # train_dataset = dataset_generator.create_imbalanced_dataset(train_images[train_idx], train_labels[train_idx]).map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
                     # valid_dataset = dataset_generator.create_imbalanced_dataset(train_images[valid_idx], train_labels[valid_idx]).map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(parameters.num_batch, drop_remainder=True).prefetch(AUTOTUNE)
 
@@ -98,7 +98,7 @@ if __name__ == '__main__':
                                                 num_classes=parameters.num_classes, 
                                                 trainable=True, 
                                                 num_trainable=-2,
-                                                batch_size=parameters.num_batch,
+                                                batch_size=args.batch_size,
                                                 train_length=len(train_images[train_idx]),
                                                 # output_bias=initial_bias
                                                 )
