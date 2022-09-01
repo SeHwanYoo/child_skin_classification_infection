@@ -30,7 +30,6 @@ import models
 import dataset_generator 
 import parameters
 
-
 import warnings 
 warnings.filterwarnings(action='ignore')
 
@@ -38,7 +37,7 @@ from silence_tensorflow import silence_tensorflow
 silence_tensorflow()
 
 AUTOTUNE = tf.data.AUTOTUNE
-from keras import backend as K
+# from keras import backend as K
             
 if __name__ == '__main__':
             

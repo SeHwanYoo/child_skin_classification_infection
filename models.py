@@ -136,23 +136,25 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
     lr_schedule = keras.optimizers.schedules.ExponentialDecay(LR, steps_per_epoch*30, 0.1, True)
     
     METRICS = [
-      keras.metrics.TruePositives(name='tp'),
-      keras.metrics.FalsePositives(name='fp'),
-      keras.metrics.TrueNegatives(name='tn'),
-      keras.metrics.FalseNegatives(name='fn'), 
-      keras.metrics.BinaryAccuracy(name='accuracy'),
-      keras.metrics.Precision(name='precision'),
-      keras.metrics.Recall(name='recall'),
-      keras.metrics.AUC(name='auc'),
-      keras.metrics.AUC(name='prc', curve='PR'), # precision-recall curve
+      tf.keras.metrics.TruePositives(name='tp'),
+      tf.keras.metrics.FalsePositives(name='fp'),
+      tf.keras.metrics.TrueNegatives(name='tn'),
+      tf.keras.metrics.FalseNegatives(name='fn'), 
+      tf.keras.metrics.BinaryAccuracy(name='accuracy'),
+      tf.keras.metrics.Precision(name='precision'),
+      tf.keras.metrics.Recall(name='recall'),
+      tf.keras.metrics.AUC(name='auc'),
+      tf.keras.metrics.AUC(name='prc', curve='PR'), # precision-recall curve
     ]
 
     if optimizer == 'adam':
         optimizer = tf.keras.optimizers.Adam(lr_schedule)
+    elif optimizer == 'rmsprop':
+        optimizer=tf.keras.optimizers.RMSprop(lr=0.0001)
     else:
         optimizer = tf.keras.optimizers.SGD(lr_schedule)
         
-    model.compile(loss='binary_crossentropy', 
+    model.compile(loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
                   optimizer=optimizer,
                   metrics=[METRICS])
 
