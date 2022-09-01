@@ -54,9 +54,9 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     
-    # gpus = []
-    # for gpu in range(int(args.gpus)):
-    #     gpus.append(f'/GPU:{gpu}')
+    gpus = []
+    for gpu in range(int(args.gpus)):
+        gpus.append(f'/GPU:{gpu}')
     
     train_images, train_labels = dataset_generator.create_train_list(part=args.part) 
     
@@ -78,9 +78,9 @@ if __name__ == '__main__':
                 
                 
                 # mirrored_strategy = tf.distribute.MirroredStrategy(devices=gpus, cross_device_ops=tf.distribute.HierarchicalCopyAllReduce())
-                # mirrored_strategy = tf.distribute.MirroredStrategy(devices=gpus)
-                # with mirrored_strategy.scope():
-                with tf.device(f'/device:CPU:{args.gpus}'):
+                mirrored_strategy = tf.distribute.MirroredStrategy(devices=gpus)
+                with mirrored_strategy.scope():
+                # with tf.device(f'/device:CPU:{args.gpus}'):
                     train_dataset = dataset_generator.create_dataset(train_images[train_idx], train_labels[train_idx]) 
                     valid_dataset = dataset_generator.create_dataset(train_images[valid_idx], train_labels[valid_idx]) 
                     
