@@ -66,13 +66,18 @@ if __name__ == '__main__':
     for _ in range(math.ceil(len_non_inf_list / len_inf_list)):
         num_len_inf = 0
         non_inf_list = [] 
-        while (num_len_inf < len_inf_list) or (len(rand_idx_list) < len_non_inf_list): 
+        while True:
             rand_idx = np.random.randint(len_non_inf_list)
             
             if rand_idx not in rand_idx_list:
                 rand_idx_list.append(rand_idx)
-                non_inf_list.append(parameters.class_list_without_infection[rand_idx])
                 num_len_inf += 1
+                
+                non_inf_list.append(parameters.class_list_without_infection[rand_idx])
+                
+                
+            if (num_len_inf >= len_inf_list) or (len(rand_idx_list) >= len_non_inf_list): 
+                break
             
         
         inf_images, inf_labels = dataset_generator.create_train_list_by_folders(parameters.infection_list, part=args.part) 
@@ -86,7 +91,7 @@ if __name__ == '__main__':
         
         train_images = np.concatenate([inf_images, non_inf_images], axis=0) 
         train_labels = np.concatenate([inf_labels, non_inf_labels], axis=0) 
-        
+
         train = list(zip(train_images, train_labels))
         random.shuffle(train) # shuffle
         train_images, train_labels = zip(*train)
@@ -110,7 +115,7 @@ if __name__ == '__main__':
             
             hist = model.fit(train_dataset, 
                             # validation_data=valid_dataset,
-                            validation_split=0.3, 
+                            # validation_split=0.3, 
                             epochs = args.epochs,
                             # verbose = 1,
                             # class_weight=class_weights, 
