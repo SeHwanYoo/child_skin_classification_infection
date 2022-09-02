@@ -43,16 +43,6 @@ def create_class_weight(train_dict):
     return class_weight
 
 def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, num_trainable=100, mc=False, batch_size=32, train_length=100, epochs=100, output_bias=None): 
-
-    # data_augmentation = tf.keras.Sequential([
-    #     layers.RandomRotation(factor=0.15),
-    #     layers.RandomTranslation(height_factor=0.1, width_factor=0.1),
-    #     layers.RandomFlip(),
-    #     layers.RandomContrast(factor=0.1),
-    # ])
-    
-    # if output_bias is not None:
-    #     output_bias = tf.keras.initializers.Constant(output_bias)
     
     if model_name == 'efficient':
         base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(parms.num_res, parms.num_res, 3),  weights = 'imagenet')
@@ -68,7 +58,6 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
         x = base_model(inputs)
         x = keras.layers.GlobalAveragePooling2D()(x) 
         x = Dropout(0.3)(x)
-        # x = keras.layers.Dense(1, activation='sigmoid', bias_initializer=output_bias)(x)
         x = keras.layers.Dense(1, activation='sigmoid')(x)
         model = tf.keras.Model(inputs=inputs, outputs=x)
         
@@ -104,8 +93,8 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
                 layer.trainable = False
 
         inputs = keras.Input(shape=(parms.num_res, parms.num_res, 3))
-        # x = keras.applications.mobilenetv2.pre
-        x = base_model(inputs)
+        x = keras.applications.mobilenetv2.preprocess_input(inputs)
+        x = base_model(x)
         x = keras.layers.GlobalAveragePooling2D()(x) 
         # x = get_dropout(x, mc)
         x = Dropout(0.3)(x)

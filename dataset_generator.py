@@ -147,13 +147,17 @@ def create_test_list(dataset_path=None, part='head'):
     for img in test_images: 
         # print(img)
         # lbl = get_label(img) 
-        lbl = img.split('\\')[3]
-
+        # lbl = img.split('\\')[3]
+        
+        # print(lbl)
+        lbl = get_test_label(img) 
+        
         # lbl
         if lbl in parameters.infection_list:
             lbl = 1 
         else:
             lbl = 0 
+        
 
         test_labels.append(lbl) 
 
@@ -248,6 +252,20 @@ def get_label(img):
     # print(f'----------------------------------------------->{img}')  
     lbl = img.split('/')[-3]
     # raise TypeError('STOP')
+    
+    if lbl.lower().replace(' ', '') in parameters.name_dict1:
+        lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
+            
+    if lbl not in parameters.class_list:
+        print(lbl)
+        raise TypeError(f'Not Found {lbl}')
+
+    return lbl
+
+
+def get_test_label(img):          
+    # print(f'----------------------------------------------->{img}')  
+    lbl = img.split('\\')[-3]
     
     if lbl.lower().replace(' ', '') in parameters.name_dict1:
         lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
