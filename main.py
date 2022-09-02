@@ -65,6 +65,22 @@ if __name__ == '__main__':
     
     print(f'{len(train_images)} images were founded')
     
+    
+    # random oversampling
+    inf_list = [idx for idx, val in enumerate(train_labels) if val == 1]
+    random_inf_list = random.sample(inf_list, 100)
+    
+    inf_images, inf_labels = [], []
+    for i in random_inf_list:
+        inf_images.append(train_images[i])
+        inf_labels.append(train_labels[i]) 
+        
+    train_images = np.concatenate([train_images, inf_images], axis=0)
+    train_labels = np.concatenate([train_labels, inf_labels], axis=0)
+    
+    
+    print(f'Now {len(train_images)} images were founded')
+    
     # initial_bias = dataset_generator.create_initial_bias(train_labels)
     
     # print(f'initial_bias : {initial_bias}')

@@ -10,7 +10,7 @@ import main
 import parameters
 
 from imblearn.over_sampling import *
-from imblearn.keras import BalancedBatchGenerator
+# from imblearn.import BalancedBatchGenerator
 
 # def random_oversampling(imgs, lbls): 
     
@@ -145,7 +145,9 @@ def create_test_list(dataset_path=None, part='head'):
 
     test_labels = [] 
     for img in test_images: 
-        lbl = get_label(img) 
+        # print(img)
+        # lbl = get_label(img) 
+        lbl = img.split('\\')[3]
 
         # lbl
         if lbl in parameters.infection_list:
