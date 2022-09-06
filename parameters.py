@@ -5,13 +5,16 @@ import os
 # base_path = 'C:/Users/user/Desktop/data/sets/Child Skin Disease'
 # base_path = 'C:/Users/user/Desktop/data/sets/Child Skin Disease'
 # base_path = '../../datasets/Child Skin Disease'
-base_path = '../../datasets/Child Skin Disease(part)'
+# base_path = '../../datasets/Child Skin Disease(part)'
+base_path = 'E:/Child Skin Disease(part)'
 dataset_path = os.path.join(base_path, 'Total_Dataset')
 
 
 num_res = 256 
 num_batch = 32
 num_classes = 2
+min_num = 0 
+max_num = 300000 
 
 name_dict1 = {
     'acnescarintegrated' : 'Acne scar', # add 

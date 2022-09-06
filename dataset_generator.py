@@ -9,20 +9,6 @@ import numpy as np
 import main
 import parameters
 
-from imblearn.over_sampling import *
-# from imblearn.import BalancedBatchGenerator
-
-# def random_oversampling(imgs, lbls): 
-    
-#     print(f'imgs--------------------->{imgs.shape}')
-    
-#     x_samp, y_samp = RandomOverSampler(imgs, lbls)
-    
-    
-#     print(f'x_samp--------------------->{x_samp.shape}')
-    
-    # return x_samp, y_samp
-
 def create_initial_bias(labels):
     non, inf = np.bincount(labels[:, 0])
     
@@ -87,27 +73,74 @@ def aug(img, label):
            
     return img, label
 
-def create_train_list(dataset_path=None, part='head'):
-    train_images = [] 
-    # test_images = []
+def create_part_all_dict(dataset_path, min_num, max_num, part='head'):
+    all_dict = dict() 
+    count_all_dict = dict() 
+    
+    kk = [ll for ll in range(7)]
+    kk.append(9)
+
+    # for i in range(10):
+    for i in kk: 
+        folders = os.listdir(os.path.join(dataset_path, f'H{i}'))
+        
+        for folder in folders:
+            imgs = glob(f'{dataset_path}/H{i}/{folder}/{part}/*.jpg')
+            
+            # folder = folder.lower().replace(' ', '')
+
+            # class 통합 관련 내용 변경
+            if folder.lower().replace(' ', '') in parameters.name_dict1: 
+                folder = parameters.name_dict1[folder.lower().replace(' ', '')]
+            
+            if folder not in count_all_dict:
+                count_all_dict[folder] = len(imgs) 
+            else:
+                count_all_dict[folder] += len(imgs)
+
+    new_count_dict = count_all_dict.copy()
+
+    # 데이터 정제
+    for key, val in count_all_dict.items():
+        if val < min_num:
+            del new_count_dict[key]
+
+        if val > max_num:
+            new_count_dict[key] = max_num
+            
+
+    idx_num = 0 
+    for key, val in new_count_dict.items():
+        # print(idx)
+        all_dict[key] = idx_num 
+        idx_num += 1 
+        
+    return all_dict, new_count_dict
+
+def create_train_list(all_dict, dataset_path=None, part='head'):
+    
+    images = [] 
+    kk = [ll for ll in range(7)]
+    kk.append(9)
     
     if dataset_path is None:
         dataset_path = parameters.dataset_path
 
-    for i in range(7):
+    for i in kk:
         # for key in train_dict.keys():
         img = glob(dataset_path + f'/H{str(i)}/*/{part}/*.jpg')
-        train_images.extend(img) 
-
-    # add JeonNam unv
-    img = glob(dataset_path + f'/H9/*/{part}/*.jpg')
-    train_images.extend(img) 
+        images.extend(img) 
             
-    random.shuffle(train_images)
+    random.shuffle(images)
 
     train_labels = [] 
-    for img in train_images: 
+    train_images = [] 
+    for img in images: 
+        
         lbl = get_label(img) 
+        
+        if lbl not in all_dict:
+            continue
         
         if lbl in parameters.infection_list:
             lbl = 1 
@@ -115,8 +148,8 @@ def create_train_list(dataset_path=None, part='head'):
             lbl = 0 
 
         train_labels.append(lbl) 
+        train_images.append(img)
         
-    
     print(f'Non-infection found : {train_labels.count(0)}, Infection found : {train_labels.count(1)}')
 
     train_images = np.reshape(train_images, [-1, 1])
@@ -125,7 +158,7 @@ def create_train_list(dataset_path=None, part='head'):
     return train_images, train_labels
 
 
-def create_test_list(dataset_path=None, part='head'):
+def create_test_list(all_dict, dataset_path=None, part='head'):
     
     if dataset_path is None:
         dataset_path = parameters.dataset_path
@@ -134,12 +167,12 @@ def create_test_list(dataset_path=None, part='head'):
 
     for i in [7, 8]:
         # for key in train_dict.keys():
-        img = glob(dataset_path + f'/H{str(i)}/*/{part}/*.jpg')
+        img = glob(dataset_path + f'/H{i}/*/{part}/*.jpg')
         test_images.extend(img) 
 
     # add JeonNam unv
-    img = glob(dataset_path + f'/H9/*/{part}/*.jpg')
-    test_images.extend(img) 
+    # img = glob(dataset_path + f'/H9/*/{part}/*.jpg')
+    # test_images.extend(img) 
             
     random.shuffle(test_images)
 
@@ -151,6 +184,9 @@ def create_test_list(dataset_path=None, part='head'):
         
         # print(lbl)
         lbl = get_test_label(img) 
+        
+        if lbl not in all_dict:
+            continue
         
         # lbl
         if lbl in parameters.infection_list:
@@ -249,9 +285,8 @@ def create_test_list_by_folder(folders, dataset_path=None, part='head'):
     return test_images, test_labels
 
 def get_label(img):          
-    # print(f'----------------------------------------------->{img}')  
-    lbl = img.split('/')[-3]
-    # raise TypeError('STOP')
+    lbl = img.split('\\')[-3] # E drive
+    # lbl = img.split('/')[-3]
     
     if lbl.lower().replace(' ', '') in parameters.name_dict1:
         lbl = parameters.name_dict1[lbl.lower().replace(' ', '')]
@@ -276,45 +311,6 @@ def get_test_label(img):
 
     return lbl
 
-# def create_imbalanced_dataset(images, labels, d_type='train'):
-#     imgs = [] 
-#     lbls = [] 
-#     print(f'images--------------------->{images}')
-    
-#     print(f'images len--------------------->{len(images)}')
-    
-#     for img, lbl in zip(images, labels): 
-        
-#         try:
-#             img = tf.io.read_file(img[0]) 
-#             img = tf.io.decode_image(img, dtype=tf.float64)
-#         except Exception as e:
-#             print(e)
-#             continue
-            
-#         img = tf.image.resize(img, [parameters.num_res, parameters.num_res])
-        
-#         imgs.append(img)
-#         lbls.append(lbl)
-        
-#     imgs = np.reshape(imgs, [-1, parameters.num_res * parameters.num_res * 3])
-#     lbls = np.reshape(lbls, [-1, 1])
-    
-#     if d_type == 'test':
-#         return tf.data.Dataset.from_tensor_slices((imgs, lbls)).batch(parameters.num_batch, drop_remainder=True)
-#     else:
-#         print(f'imgs--------------------->{imgs.shape}')
-#         sm = SMOTE(random_state=42)
-#         # x_samp, y_samp = RandomOverSampler(imgs, lbls)
-#         x_samp, y_samp = sm.fit_resample(imgs, lbls)
-#         print(f'x_samp--------------------->{x_samp.shape}')
-        
-#         x_samp = np.reshape(x_samp, [-1, parameters.num_res, parameters.num_res, 3])
-#         # return BalancedBatchGenerator(imgs, lbls, sampler=SMOTE(), batch_size=parameters.num_batch, random_state=42)
-#         return tf.data.Dataset.from_tensor_slices((x_samp, y_samp))
-        
-
-
 def create_dataset(images, labels, d_type='train'):
     
     if d_type == 'test':
@@ -330,26 +326,78 @@ def create_dataset(images, labels, d_type='train'):
             output_types=(tf.float64, tf.float32), 
             output_shapes=(tf.TensorShape([parameters.num_res, parameters.num_res, 3]), tf.TensorShape([1])),
             args=[images, labels])
+        
+def centre_crop(img, num_res): 
+    height, width, _ = img.shape
+    cent_h, cent_w = height // 2, width // 2
+    return img[cent_h - (num_res // 2) : cent_h + (num_res // 2), cent_w - (num_res // 2) : cent_w + (num_res // 2)]
+
+def rotate_img(img, degree=90):        
+    if degree == 90:
+        degrees = cv2.ROTATE_90_CLOCKWISE
+    elif degree == 120:
+        degrees = cv2.ROTATE_120
+    elif degree == 180:
+        degrees = cv2.ROTATE_180
+    else:
+        # 270
+        degrees = cv2.ROTATE_90_COUNTERCLOCKWISE
+            
+    return cv2.rotate(img, degrees)
+
+def flip_img(img,flip=0):        
+    if flip == 90:
+        flips = 0
+    else:
+        flips = 1
+            
+    return cv2.flip(img, flips)
 
 # def train_skin_data(files):
 def train_skin_data(images, labels):
+    unique, count = np.unique(labels, return_counts=True)
+    
+    # print(f'-------------------------------------->{unique}')
+    # print(f'-------------------------------------->{count}')
+    
+    max_dict_values = max(count)
+    flip_list = [0, 1]
+    degree_list = [90, 120, 180, 270]
     
     for img, lbl in zip(images, labels):
-    
         img = img[0].decode('utf-8')
+        
         img_path = img
-
         try:
-            img = tf.io.read_file(img) 
-            img = tf.io.decode_image(img, dtype=tf.float64)
-            img = tfa.image.equalize(img) 
+            # img = tf.io.decode_image(img, dtype=tf.float64)
+            img = cv2.imread(img)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img = cv2.resize(img, (500, 500))
         except:
-            # print(f'{img_path} is crushed')
+            print(f'{img_path} is crushed')
             continue
-            
-        img = tf.image.resize(img, [parameters.num_res, parameters.num_res])
+        
+        img = centre_crop(img, parameters.num_res)
+        
+        # category_lbl = tf.keras.utils.to_categorical(lbl, num_classes)
+        # category_lbl = np.reshape(category_lbl, [num_classes])
 
-        yield (img, lbl)    
+        yield (img, lbl) 
+
+        count_idx = count[np.where(unique == lbl)[0][0]]
+        
+        for ii in range(max_dict_values // count_idx):
+            if ii % 2 == 0:
+                # pass 
+                randint = np.random.randint(len(flip_list))
+                f_img = flip_img(img, randint)
+                
+                yield (f_img, lbl) 
+            else:
+                randint = np.random.randint(len(degree_list))
+                r_img = rotate_img(img, randint)
+                
+                yield (r_img, lbl) 
 
             
 def test_skin_data(images, labels,):
@@ -362,7 +410,6 @@ def test_skin_data(images, labels,):
             img = tf.io.read_file(img) 
             img = tf.io.decode_image(img, dtype=tf.float64)
         except:
-            # print(f'{img_path} is crushed')
             continue
             
         img = tf.image.resize(img, [parameters.num_res, parameters.num_res])
