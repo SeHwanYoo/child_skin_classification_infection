@@ -112,7 +112,7 @@ if __name__ == '__main__':
                                                                        monitor='val_accuracy', 
                                                                        verbose=0, 
                                                                        save_best_only=True,
-                                                                       save_weights_only=False, 
+                                                                       save_weights_only=True, 
                                                                        mode='max', 
                                                                        freq='epoch')]
                     
@@ -120,11 +120,11 @@ if __name__ == '__main__':
                                                                        monitor='val_loss', 
                                                                        verbose=0, 
                                                                        save_best_only=True,
-                                                                       save_weights_only=False, 
+                                                                       save_weights_only=True, 
                                                                        mode='min', 
                                                                        freq='epoch')]
                     
-                    checkpoint3 = [tf.keras.callbacks.EarlyStopping(monitor = 'val_accuracy', 
+                    checkpoint3 = [tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', 
                                                            patience=4,
                                                            min_delta=0)]
                     

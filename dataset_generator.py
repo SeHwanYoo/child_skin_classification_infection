@@ -400,18 +400,35 @@ def train_skin_data(images, labels):
                 yield (r_img, lbl) 
 
             
-def test_skin_data(images, labels,):
+def test_skin_data(images, labels):
+    
     for img, lbl in zip(images, labels):
     
         img = img[0].decode('utf-8')
-        img_path = img
+        # img_path = img
         
-        try:
-            img = tf.io.read_file(img) 
-            img = tf.io.decode_image(img, dtype=tf.float64)
-        except:
-            continue
+        # try:
+        #     img = tf.io.read_file(img) 
+        #     img = tf.io.decode_image(img, dtype=tf.float64)
+        # except:
+        #     continue
             
-        img = tf.image.resize(img, [parameters.num_res, parameters.num_res])
+        # img = tf.image.resize(img, [parameters.num_res, parameters.num_res])
         
-        yield (img, lbl)    
+        # yield (img, lbl)    
+        img_path = img
+        try:
+            # img = tf.io.decode_image(img, dtype=tf.float64)
+            img = cv2.imread(img)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img = cv2.resize(img, (500, 500))
+        except:
+            print(f'{img_path} is crushed')
+            continue
+        
+        img = centre_crop(img, parameters.num_res)
+        
+        # category_lbl = tf.keras.utils.to_categorical(lbl, num_classes)
+        # category_lbl = np.reshape(category_lbl, [num_classes])
+
+        yield (img, lbl) 
