@@ -5,8 +5,8 @@ import os
 # base_path = 'C:/Users/user/Desktop/data/sets/Child Skin Disease'
 # base_path = 'C:/Users/user/Desktop/data/sets/Child Skin Disease'
 # base_path = '../../datasets/Child Skin Disease'
-# base_path = '../../datasets/Child Skin Disease(part)'
-base_path = 'E:/Child Skin Disease(part)'
+base_path = '../../datasets/Child Skin Disease(part)'
+# base_path = 'E:/Child Skin Disease(part)'
 dataset_path = os.path.join(base_path, 'Total_Dataset')
 
 
