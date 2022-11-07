@@ -93,15 +93,19 @@ if __name__ == '__main__':
                     train_dataset = train_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(args.batch_size, drop_remainder=True).prefetch(AUTOTUNE)
                     valid_dataset = valid_dataset.map(dataset_generator.aug1, num_parallel_calls=AUTOTUNE).batch(args.batch_size, drop_remainder=True).prefetch(AUTOTUNE)
 
-                    model = models.create_model(args.model_name, 
-                                                optimizer=args.optim,
-                                                num_classes=parameters.num_classes, 
-                                                trainable=args.trainable, 
-                                                num_trainable=-2,
-                                                batch_size=args.batch_size,
-                                                train_length=len(train_images[train_idx]),
+                    model = models.create_model(model_name=args.model_name, 
+                                                steps_per_epoch= 
+                                                # optimizer=args.optim,
+                                                # num_classes=parameters.num_classes, 
+                                                # # trainable=args.trainable, 
+                                                # num_trainable=-2,
+                                                # batch_size=args.batch_size,
+                                                # train_length=len(train_images[train_idx]),
                                                 # output_bias=initial_bias
                                                 )
+                    
+                    # def create_model(model_name, optimizer='sgd', trainable=True, steps_per_epoch=10): 
+
 
                     
                     min_filepath = os.path.join(f'../../models/child_classification_infection/min_check_point_efficient_{time.strftime("%Y%m%d-%H%M%S")}.h5')

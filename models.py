@@ -42,24 +42,28 @@ def create_class_weight(train_dict):
 
     return class_weight
 
-def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, num_trainable=100, mc=False, batch_size=32, train_length=100, epochs=100, output_bias=None): 
+def create_model(model_name, optimizer='sgd', trainable=True, steps_per_epoch=10): 
     
     if model_name == 'efficient':
-        base_model = keras.applications.EfficientNetB4(include_top=False, input_shape=(parms.num_res, parms.num_res, 3),  weights = 'imagenet')
-        # base_model.trainable = trainable
+        base_model = keras.applications.EfficientNetB3(include_top=False, input_shape=(parms.num_res, parms.num_res, 3),  weights = 'imagenet')
         
-        # base_model.trainable = trainable
-        
-        # if trainable:
-        #     for layer in base_model.layers[:num_trainable]:
-        #         layer.trainable = False
+        base_model.trainable = trainable
         
         inputs = keras.Input(shape=(parms.num_res, parms.num_res, 3))
         x = base_model(inputs)
         x = keras.layers.GlobalAveragePooling2D()(x) 
-        x = Dropout(0.5)(x)
+
+        x = keras.layers.Dense(512, activation='swish')(x)
+        x = keras.layers.BatchNormalization()(x)
+        x = keras.layers.Dropout(0.5)(x)
+        
+        x = keras.layers.Dense(256, activation='swish')(x)
+        x = keras.layers.BatchNormalization()(x)
+        x = keras.layers.Dropout(0.5)(x)
+        
         x = keras.layers.Dense(1, activation='sigmoid')(x)
-        model = tf.keras.Model(inputs=inputs, outputs=x)
+        model = keras.Model(inputs=inputs, outputs=x)
+        
         
     elif model_name == 'resnet':
     # if model_name == 'efficient':
@@ -69,9 +73,9 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
         
         base_model.trainable = trainable
         
-        if trainable:
-            for layer in base_model.layers[:num_trainable]:
-                layer.trainable = False
+        # if trainable:
+        #     for layer in base_model.layers[:num_trainable]:
+        #         layer.trainable = False
         
         inputs = keras.Input(shape=(parms.num_res, parms.num_res, 3))
         x = keras.applications.resnet50.preprocess_input(inputs)
@@ -88,9 +92,9 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
         base_model = keras.applications.MobileNetV2(include_top=False, input_shape=(parms.num_res, parms.num_res, 3),  weights = 'imagenet')
 
         base_model.trainable = trainable
-        if trainable:
-            for layer in base_model.layers[:num_trainable]:
-                layer.trainable = False
+        # if trainable:
+        #     for layer in base_model.layers[:num_trainable]:
+        #         layer.trainable = False
 
         inputs = keras.Input(shape=(parms.num_res, parms.num_res, 3))
         x = keras.applications.mobilenetv2.preprocess_input(inputs)
@@ -120,7 +124,7 @@ def create_model(model_name, optimizer='adam', num_classes=2, trainable=False, n
 
     # LR = 0.001
     LR = 0.001
-    steps_per_epoch = (train_length / batch_size)
+    # steps_per_epoch = (train_length / batch_size)
     # lr_schedule = CustomSchedule(LR, 3*steps_per_epoch, epochs * steps_per_epoch)
     lr_schedule = keras.optimizers.schedules.ExponentialDecay(LR, steps_per_epoch*30, 0.1, True)
     
